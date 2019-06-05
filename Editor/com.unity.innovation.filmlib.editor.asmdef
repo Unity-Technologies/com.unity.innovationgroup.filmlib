@@ -1,7 +1,7 @@
 {
-    "name": "mwu.filmlib.editor",
+    "name": "com.unity.innovation.filmlib.editor",
     "references": [
-        "mwu.filmlib",
+        "com.unity.innovation.filmlib",
         "Unity.RenderPipelines.HighDefinition.Runtime",
         "Cinemachine",
         "Unity.Postprocessing.Runtime",

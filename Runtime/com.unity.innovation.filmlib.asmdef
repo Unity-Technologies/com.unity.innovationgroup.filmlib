@@ -1,5 +1,5 @@
 {
-    "name": "mwu.filmlib",
+    "name": "com.unity.innovation.filmlib",
     "references": [
         "Cinemachine",
         "Unity.TextMeshPro",

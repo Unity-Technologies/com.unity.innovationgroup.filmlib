@@ -12,7 +12,7 @@ namespace MWU.FilmLib
         /// <summary>
         /// Root path to our package
         /// </summary>
-        public static string packagePathRoot = "Packages/com.mwu.filmlib";
+        public static string packagePathRoot = "Packages/com.unity.innovationgroup.filmlib";
 
 #if UNITY_EDITOR
         /// <summary>
