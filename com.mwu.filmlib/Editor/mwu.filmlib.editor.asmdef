@@ -1,0 +1,22 @@
+{
+    "name": "mwu.filmlib.editor",
+    "references": [
+        "mwu.filmlib",
+        "Unity.RenderPipelines.HighDefinition.Runtime",
+        "Cinemachine",
+        "Unity.Postprocessing.Runtime",
+        "Unity.RenderPipelines.Core.Runtime",
+        "Unity.Postprocessing.Editor",
+        "Unity.RenderPipelines.Core.Editor"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}

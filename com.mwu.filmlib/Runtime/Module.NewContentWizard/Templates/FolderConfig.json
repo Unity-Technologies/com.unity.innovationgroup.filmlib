@@ -1,0 +1,58 @@
+{
+  "name": "Animation Folder Config",
+  "description": "Sample folder structure useful for building animation projects with Unity",
+  "type": 0,
+  "entries": [
+    {
+      "name": "Content",
+      "addEmptyPlaceholder": false,
+      "children": [
+        {
+          "name": "Animation",
+          "addEmptyPlaceholder": true,
+          "children": []
+        },
+        {
+          "name": "Audio",
+          "addEmptyPlaceholder": true,
+          "children": []
+        },
+        {
+          "name": "Characters",
+          "addEmptyPlaceholder": true,
+          "children": []
+        },
+        {
+          "name": "Sets",
+          "addEmptyPlaceholder": true,
+          "children": []
+        },
+        {
+          "name": "Props",
+          "addEmptyPlaceholder": true,
+          "children": []
+        },
+        {
+          "name": "VFX",
+          "addEmptyPlaceholder": true,
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "Prefabs",
+      "addEmptyPlaceholder": true,
+      "children": []
+    },
+    {
+      "name": "Settings",
+      "addEmptyPlaceholder": true,
+      "children": []
+    },
+    {
+      "name": "Timeline",
+      "addEmptyPlaceholder": true,
+      "children": []
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "name": "Animation Scene Config",
+  "description": "Sample scene structure, allows users to auto-populate a scene with structure, timelines, post volumes etc",
+  "type": 1,
+  "entries": [
+    {
+      "name": "Main Camera",
+      "createNewIfAlreadyExists": false,
+      "components": [
+        {
+          "type": 1,
+          "requiresSubAsset": false
+        },
+        {
+          "type": 2,
+          "requiresSubAsset": false
+        },
+        {
+          "type": 4,
+          "requiresSubAsset": false
+        },
+        {
+          "type": 7,
+          "requiresSubAsset": false
+        }
+      ],
+      "children": []
+    },
+    {
+      "name": "--CHARS--",
+      "createNewIfAlreadyExists": false,
+      "components": [],
+      "children": []
+    },
+    {
+      "name": "--PROPS--",
+      "createNewIfAlreadyExists": false,
+      "components": [],
+      "children": []
+    },
+    {
+      "name": "--TARGETS--",
+      "createNewIfAlreadyExists": false,
+      "components": [],
+      "children": []
+    },
+    {
+      "name": "--CAMERAS--",
+      "createNewIfAlreadyExists": false,
+      "components": [],
+      "children": []
+    },
+    {
+      "name": "--TIMELINES--",
+      "createNewIfAlreadyExists": false,
+      "components": [],
+      "children": [
+        {
+          "name": "MasterTimeline",
+          "createNewIfAlreadyExists": false,
+          "components": [
+            {
+              "type": 3,
+              "requiresSubAsset": false
+            }
+          ],
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "--LIGHTING--",
+      "createNewIfAlreadyExists": false,
+      "components": [],
+      "children": []
+    },
+    {
+      "name": "--ENVIRONMENT--",
+      "createNewIfAlreadyExists": false,
+      "components": [],
+      "children": []
+    },
+    {
+      "name": "--VFX--",
+      "createNewIfAlreadyExists": false,
+      "components": [],
+      "children": []
+    },
+    {
+      "name": "--SCENE-SETTINGS--",
+      "createNewIfAlreadyExists": false,
+      "components": [],
+      "children": [
+        {
+          "name": "PostVolume",
+          "createNewIfAlreadyExists": false,
+          "components": [
+            {
+              "type": 6,
+              "requiresSubAsset": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "name": "SceneSettings",
+          "createNewIfAlreadyExists": false,
+          "components": [
+            {
+              "type": 5,
+              "requiresSubAsset": true
+            }
+          ],
+          "children": []
+        },
+        {
+          "name": "RenderSettings",
+          "createNewIfAlreadyExists": false,
+          "components": [
+            {
+              "type": 8,
+              "requiresSubAsset": false
+            }
+          ],
+          "children": []
+        }
+      ]
+    }
+  ]
+}
