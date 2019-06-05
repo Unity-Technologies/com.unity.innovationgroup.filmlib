@@ -1,9 +1,9 @@
 {
-  "name": "com.mwu.filmlib",
-  "displayName": "MWU Film Library",
+  "name": "com.unity.innovationgroup.filmlib",
+  "displayName": "Unity Innovation Group Film Library",
   "version": "0.1.0-preview",
   "unity": "2018.3",
-  "description": "MWU Film Library",
+  "description": "Unity Innovation Group Film Library",
   "dependencies": {
     "com.unity.cinemachine": "2.2.9-preview.2",
     "com.unity.render-pipelines.core": "4.10.0-preview",
