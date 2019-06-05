@@ -1,10 +1,7 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.IO;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
-using Loc = MWU.FilmLib.NewContentWizardLoc;
 using Control = MWU.FilmLib.NewContentWizardController;
+using Loc = MWU.FilmLib.NewContentWizardLoc;
 
 namespace MWU.FilmLib
 {
@@ -19,11 +16,11 @@ namespace MWU.FilmLib
             thisWindow.SetWizardType(TEMPLATE_TYPE.SCENE);
         }
 
-        [MenuItem(Loc.MENU_FILE_NEWPROJECT, false, DEFAULTMENUPRIORITY)]
-        public static void NewProjectFromTemplate()
-        {
-            Debug.Log("Create new Project from template: Sorry not supported currently");
-        }
+        //[MenuItem(Loc.MENU_FILE_NEWPROJECT, false, DEFAULTMENUPRIORITY)]
+        //public static void NewProjectFromTemplate()
+        //{
+        //    Debug.Log("Create new Project from template: Sorry not supported currently");
+        //}
 
         [MenuItem(Loc.MENU_TOOLS_EDITTEMPLATES, false, DEFAULTMENUPRIORITY)]
         public static void EditContentTemplates()
