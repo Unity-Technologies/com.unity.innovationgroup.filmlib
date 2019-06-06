@@ -4,7 +4,8 @@
         "Cinemachine",
         "Unity.TextMeshPro",
         "Unity.RenderPipelines.HighDefinition.Runtime",
-        "com.newtonsoft.json"
+        "com.newtonsoft.json",
+        "Unity.RenderPipelines.Core.Runtime"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],
