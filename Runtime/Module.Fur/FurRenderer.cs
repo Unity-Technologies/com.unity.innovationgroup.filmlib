@@ -1,11 +1,56 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 using System.Collections.Generic;
 
+// Fur coat layer abstraction, to be converted to SurfaceData for Hair shading.
+// Since we allow for opaque alpha dither (and converge with TAA or super sampling), we allow for multiple coats.
+
+[Serializable]
+public sealed class FurCoatLayer
+{
+    // Geometry distance field (for baked case).
+    public Texture3D distanceField;
+    
+    // Alpha Remap, distance field attenuation.
+    public Vector2   alphaRemap;
+
+    // Density
+    public Texture2D densityMap;
+    public float     density;
+
+    // Height
+    public Texture2D heightMap;
+    public float     height;
+    public float     minimumHeight;
+
+    // Comb
+    public Texture2D combMap;
+    public float     combStrength;
+
+    // Shading
+    public float     specularShift;
+    public float     secondarySpecularShift;
+
+    // TODO: Investigate ColorUsage
+    public Color     specularTint;
+    public Color     secondarySpecularTint;
+
+    public float     secondarySpecularSmoothness;
+
+    public float     scatterAmount;
+    public Color     scatterTint;
+
+    public Color     rootColor;
+    public Color     tipColor; 
+}
+
 [ExecuteInEditMode]
 public sealed class FurRenderer : MonoBehaviour
 {
+    public FurCoatLayer[] _coatLayers;
+
     [SerializeField] Renderer[] _renderers = null;
 
     //Grooming Inputs

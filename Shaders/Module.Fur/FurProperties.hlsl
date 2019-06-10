@@ -44,6 +44,12 @@ float3 _FurScatterTint;
 float _FurSelfOcclusionMultiplier;
 float _FurOvercoatSelfOcclusionMultiplier;
 
+float3 _FurOvercoatRootColor;
+float3 _FurOvercoatTipColor;
+
+float3 _FurUndercoatRootColor;
+float3 _FurUndercoatTipColor;
+
 // Currently shells are drawn one-by-one outward -> inwward (since we render opaque, reduce overdraw)
 // For alpha blending, shells must be draw inward -> outward
 float _FurShellLayer;
