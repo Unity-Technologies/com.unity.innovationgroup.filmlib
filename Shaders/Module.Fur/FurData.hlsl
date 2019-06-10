@@ -4,7 +4,7 @@
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Sampling/SampleUVMapping.hlsl"
 #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/MaterialUtilities.hlsl"
 
-#define DENSITY 200
+#define DENSITY 500
 
 float _SuperSampleSubFrame;
 void DitherTransparency(float alpha, float2 position)
@@ -15,29 +15,72 @@ void DitherTransparency(float alpha, float2 position)
     clip(alpha - nrnd);
 }
 
-float sdCone( float3 p, float2 c )
+float SignedDistanceField_Cone(float q, float z, float2 c)
 {
-   // c must be normalized
-   float q = length(p.xy);
-   return dot(c, float2(q, p.z));
+   return dot(c, float2(q, z));
 }
 
-float FurPatch(in float3 p)
-{
-   float3 r = float3(0.4, 0.4, -5);
-   float3 q = fmod(p, r) - 0.5 * r;
+float2 hash2( float2  p, float strength) { p = float2( dot(p,float2(127.1,311.7)), dot(p,float2(269.5,183.3)) ); return frac(sin(p)*43758.5453) * strength; }
 
-   return 1.0 - sdCone(q, normalize(float2(10, 2)));
+float VoronoiDistance( in float2 x, float w, float strength)
+{
+    float2 n = floor( x );
+    float2 f = frac( x );
+
+    float m = 8.0;
+    for( int j = -2; j <= 2; j++ )
+    {
+        for( int i = -2; i <= 2; i++ )
+        {
+            float2 g = float2( float(i),float(j) );
+            float2 o = hash2( n + g, strength);
+        
+            // Distance to cell        
+            float d = length(g - f + o);
+            float h = smoothstep( 0.0, 1.0, 0.5 + 0.5 * (m - d) / w );
+        
+            m = lerp( m, d, h ) - h * (1.0 - h) * w / (1.0 + 3.0 * w); // Distance
+        }
+    }
+    
+    return m;
 }
 
+#if 1 // TODO: Directive for analytic / baked.
+    #define SAMPLE_FUR SampleFur_Analytic
+#else
+    #define SAMPLE_FUR SampleFur_Baked
+#endif
+
+float SampleFur_Analytic(in float3 p)
+{
+   //Parametrize the cone geometric description
+   float2 c = normalize(float2(10, 2));
+
+   //Break up the distance field repetition pattern.
+   float sd = VoronoiDistance(p.xy, 1.0, 1.0);
+
+   //Submit to SDF
+   return 1.0 - SignedDistanceField_Cone(sd, p.z, c);
+}
+
+float SampleFur_Baked(in float3 p)
+{
+    // TODO
+    return 0;
+}
+
+// TODO : Move to intermediate pass.
 float3 NormalFromDepth(uint2 positionCS)
 {
     uint2 pixCoord = (uint2)positionCS.xy >> 0;
+
+    // NOTE: Y-Flip in scene view camera.
     //pixCoord.y = _ScreenSize.y - pixCoord.y;
                     
     pixCoord += 1;
                     
-    float depth = LOAD_TEXTURE2D(_DepthPyramidTexture, pixCoord).r;
+    float depth     = LOAD_TEXTURE2D(_DepthPyramidTexture, pixCoord).r;
     float depth_ddx = LOAD_TEXTURE2D(_DepthPyramidTexture, pixCoord + int2(1,0)).r;
     float depth_ddy = LOAD_TEXTURE2D(_DepthPyramidTexture, pixCoord + int2(0,1)).r;
 
@@ -55,82 +98,62 @@ float3 NormalFromDepth(uint2 positionCS)
     float3 vec_ddx = (wp_ddx - wp);
     float3 vec_ddy = (wp_ddy - wp);
     float3 N = cross(vec_ddx, vec_ddy);
+
     return -normalize(N);
+}
+
+float SelfOcclusionTerm()
+{
+    return 1;
 }
 
 #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/BuiltinUtilities.hlsl"
 
 void GetSurfaceAndBuiltinData(FragInputs input, float3 V, inout PositionInputs posInput, out SurfaceData surfaceData, out BuiltinData builtinData)
 {
-
-    float alpha = 1;
-
-// Switch between Analytic and Prebaked SDF.
-    //float3 vertexNormal = input.worldToTangent[2].xyz;
-    //input.color.xyz = Orthonormalize(input.color.xyz, vertexNormal);
-    //input.worldToTangent = BuildWorldToTangent(float4(input.color.xyz, 1.0), vertexNormal);
-#if 1
-    //FurShellGeometryDefinition(input.texCoord0.xy);
-
-    //Compute N in R3
-    float3 P = FurPatch(float3(DENSITY * (input.texCoord0.xy + 0.5), _FurShellLayer * 2.0));
-    float3 N = normalize
-               (
-                   float3
-                   (
-                       FurPatch( float3(P.x + 0.001, P.y, P.z) ) - FurPatch( float3(P.x - 0.001, P.y, P.z) ),
-                       FurPatch( float3(P.x, P.y + 0.001, P.z) ) - FurPatch( float3(P.x, P.y - 0.001, P.z) ),
-                       FurPatch( float3(P.x, P.y, P.z + 0.001) ) - FurPatch( float3(P.x, P.y, P.z - 0.001) )
-                   )
-               );
-
-    //Alpha.
-    //alpha = 1.0 - smoothstep(0.1, 1.0, _FurShellLayer);
-    //alpha *= lerp(0.5, 1.0, P);
-    //DitherTransparency(alpha, posInput.positionSS);
-
-    clip(P - 0.3);
-
-    //Negate the volume gradient.
-    N = TransformTangentToWorld(-N, input.worldToTangent);
-    real3 furGeometryGradient = SurfaceGradientFromPerturbedNormal(input.worldToTangent[2].xyz, N);
-    N = SurfaceGradientResolveNormal(input.worldToTangent[2].xyz, furGeometryGradient * 2);
-
+#ifdef _DOUBLESIDED_ON
+    float3 doubleSidedConstants = _DoubleSidedConstants.xyz;
 #else
-    float4 BakedSDF = SAMPLE_TEXTURE3D(_FurGeometrySDF, sampler_FurGeometrySDF, float3(input.texCoord0.x * 10, min(_FurShellLayer, 1.0), input.texCoord0.y  * 10));
-    //float4 BakedSDF = LOAD_TEXTURE3D(_FurGeometrySDF, float3(input.texCoord0.x * 1, _FurShellLayer, input.texCoord0.y  * 1));
-
-    //alpha  = 1.0 - _FurShellLayer;
-    //alpha *= saturate(0.7 - BakedSDF.a * 150);
-    alpha = smoothstep(0.995, 1.0, 1.0 - BakedSDF.a); //pow(1.0 - BakedSDF.a, 1000);
-    clip(alpha - 0.4);
-
-    float3 N = BakedSDF.xyz; //Gradient is precomputed.
-    //N = normalize(TransformTangentToWorld(-N.xyz, input.worldToTangent));
-
-    //real3 furGeometryGradient = SurfaceGradientFromPerturbedNormal(input.worldToTangent[2].xyz, N);
-    //N = SurfaceGradientResolveNormal(input.worldToTangent[2].xyz, furGeometryGradient);
+    float3 doubleSidedConstants = float3(1.0, 1.0, 1.0);
 #endif
 
-    N = NormalFromDepth(posInput.positionSS);
-    float3 T = normalize(input.color.xyz); //Orthonormalize(input.color.xyz, N);
+    ApplyDoubleSidedFlipOrMirror(input, doubleSidedConstants);
+
+    // Sample the fur distance field (analytic or baked).
+    float alpha = SAMPLE_FUR(float3(DENSITY * input.texCoord0.xy, _FurShellLayer));
+
+    //TODO: Alpha cutoff mode.
+#if 1
+    clip(step(_Metallic, alpha) - 0.0001);
+#else
+    // We smoothstep + dither to achieve soft falloffs.
+    // TODO: Factor fur shell height.
+    DitherTransparency(smoothstep(0.1, 0.2, alpha));
+#endif
+
+    // NOTE: Currently we derive normals from depth, in future investigate deriving combed normal from
+    //       distance field gradient.
+    float3 N = NormalFromDepth(posInput.positionSS);
+
+    // NOTE: We calculate tangents on vertex stage, derived from the delta between two shells.
+    float3 T = normalize(input.color.xyz);
 
     // Init Fur Data
     surfaceData.materialFeatures = MATERIALFEATUREFLAGS_HAIR_KAJIYA_KAY;
-    surfaceData.ambientOcclusion = 1;
     surfaceData.diffuseColor = pow(_FurShellLayer, 5.0) * _BaseColor; 
-    surfaceData.specularOcclusion = 1;
     surfaceData.normalWS = N;
     surfaceData.geomNormalWS = input.worldToTangent[2];
     surfaceData.perceptualSmoothness = _Smoothness;
-    surfaceData.transmittance = float3(1, 1, 1);
-    surfaceData.rimTransmissionIntensity = 0.5;
+    surfaceData.transmittance = _FurScatterTint;
+    surfaceData.rimTransmissionIntensity = _FurScatter;
     surfaceData.hairStrandDirectionWS = T; 
     surfaceData.secondaryPerceptualSmoothness = _SecondaryPerceptualSmoothness;
-    surfaceData.specularTint = float3(1, 1, 1);
-    surfaceData.secondarySpecularTint = float3(1, 1, 1);
+    surfaceData.specularTint = _SpecularTint;
+    surfaceData.secondarySpecularTint = _SecondarySpecularTint;
     surfaceData.specularShift = _SpecularShift;
     surfaceData.secondarySpecularShift = _SecondarySpecularShift;
+    surfaceData.ambientOcclusion = SelfOcclusionTerm();
+    surfaceData.specularOcclusion = GetSpecularOcclusionFromAmbientOcclusion(ClampNdotV(dot(surfaceData.normalWS, V)), surfaceData.ambientOcclusion, PerceptualSmoothnessToRoughness(surfaceData.perceptualSmoothness));
 
     // Builtin Data
     // For back lighting we use the oposite vertex normal 

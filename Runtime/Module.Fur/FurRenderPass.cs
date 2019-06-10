@@ -19,7 +19,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
     [RequireComponent(typeof(Camera))]
     public sealed class FurRenderPass : MonoBehaviour
     {
-        // Currently shell count is internally set, in the future, this needs to be turned into a system to  
+        // Currently shell count is internally set, in the future, this needs to be converted to per-renderer setting
         const int kShellCount = 128;
 
         static class ShaderIDs
@@ -46,7 +46,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
             // Hook into HDRP passes, inject a fur shell depth + opaque pass.
             hdCamera.afterDepthPrepass  += FurShellDepthPass;
-            hdCamera.afterForwardOpaque += FurShellOpaquePass;
+            hdCamera.afterForwardOpaque += FurShellForwardOpaquePass;
         
             //We also would like to add this renderpass to the SceneView camera.
             //foreach (SceneView sv in SceneView.sceneViews)
@@ -70,7 +70,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             if(hdCamera == null) return;
 
             hdCamera.afterDepthPrepass  -= FurShellDepthPass;
-            hdCamera.afterForwardOpaque -= FurShellOpaquePass;
+            hdCamera.afterForwardOpaque -= FurShellForwardOpaquePass;
 
             //Remove renderpass from SceneView as well.
             //foreach (SceneView sv in SceneView.sceneViews)
@@ -93,7 +93,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 CoreUtils.SetKeyword(cmd, "FUR_OVERCOAT", false);
 
                 //TODO: Per-renderer shell count.
-                for (int s = 0; s < kShellCount; ++s)
+                for (int s = kShellCount; s >= 0; --s)
                 {
                     cmd.SetGlobalFloat(ShaderIDs._FurShellLayer, (float)s / kShellCount);
                     RenderShellLayer(hdCamera, cmd, cull, context, ShaderPassNames._FurShellDepthName);
@@ -102,16 +102,24 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
             //TODO: Overcoats.
         }
+        
+        void FurShellDepthPassInstanced(ScriptableRenderContext context, HDCamera hdCamera, CullResults cull, CommandBuffer cmd,
+                                        RTHandleSystem.RTHandle depthStencil)
+        {
+            using (new ProfilingSample(cmd, "Fur (Depth) (Instanced)"))
+            {
+            }
+        }
 
-        void FurShellOpaquePass(ScriptableRenderContext context, HDCamera hdCamera, CullResults cull, CommandBuffer cmd,
-                                RTHandleSystem.RTHandle colorBuffer, RTHandleSystem.RTHandle depthStencil)
+        void FurShellForwardOpaquePass(ScriptableRenderContext context, HDCamera hdCamera, CullResults cull, CommandBuffer cmd,
+                                       RTHandleSystem.RTHandle colorBuffer, RTHandleSystem.RTHandle depthStencil)
         {
             using (new ProfilingSample(cmd, "Fur (Opaque) (Under Coats)"))
             {
                 CoreUtils.SetKeyword(cmd, "FUR_OVERCOAT", false);
                 
                 //TODO: Per-renderer shell count.
-                for (int s = 0; s < kShellCount; ++s)
+                for (int s = kShellCount; s >= 0; --s)
                 {
                     cmd.SetGlobalFloat(ShaderIDs._FurShellLayer, (float)s / kShellCount);
                     RenderShellLayer(hdCamera, cmd, cull, context, ShaderPassNames._FurShellOpaqueName, HDUtils.k_RendererConfigurationBakedLighting);
@@ -121,7 +129,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             //TODO: Overcoats.
         }
 
-        //TODO: GPU Instance Dithered Fur Shells.
+        //TODO: GPU Instance Dithered Fur Shells to GBuffer.
         private void RenderShellLayer(HDCamera                hdCamera,
                                       CommandBuffer           cmd,
                                       CullResults             cull,

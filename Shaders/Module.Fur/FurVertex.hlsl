@@ -1,5 +1,6 @@
 float3 Dynamics(AttributesMesh input)
 {
+    // TODO: 
     //ApplyWindDisplacement(float3(0,0,0), 0, 0, 0, 0, 0 ,0, 0, 0, 0);
     return 0.05 * float3(0, -1, 0);
 }
@@ -45,7 +46,6 @@ AttributesMesh ApplyMeshModification(AttributesMesh input)
         float3 nextShellPositionWS = (P0 * pow(1 - U, 2.0)) + (P1 * pow(U, 2.0)) + (PC * 2 * U * (1 - U));
 
         //Apply Wind
-
         ApplyWindDisplacement(positionWS,          normalWS, P0, 0.2, 0.9, 0.3, 0.3, 1, 0.05 * h * _FurShellLayer, _Time);
         ApplyWindDisplacement(nextShellPositionWS, normalWS, P0, 0.2, 0.9, 0.3, 0.3, 1, 0.05 * h * _FurShellLayer, _Time);
 

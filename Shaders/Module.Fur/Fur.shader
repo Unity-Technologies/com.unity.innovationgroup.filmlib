@@ -1,4 +1,4 @@
-Shader "Custom/Fur"
+Shader "HDRP/Film/Fur"
 {
     Properties
     {
@@ -308,7 +308,7 @@ Shader "Custom/Fur"
     // #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariables.hlsl"
     // #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.cs.hlsl"
     
-    //#include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/LitProperties.hlsl"
+    #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/LitProperties.hlsl"
     #include "FurProperties.hlsl"
 
     // TODO:
@@ -567,7 +567,7 @@ Shader "Custom/Fur"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariables.hlsl"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Material.hlsl"
 
-            //Custom: Fur.hlsl for Anisotropic Shading.
+            // Custom: Fur.hlsl for Anisotropic Shading.
             //#include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.hlsl"
             #include "Fur.hlsl"
 
@@ -577,11 +577,11 @@ Shader "Custom/Fur"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/ShaderPass/LitDepthPass.hlsl"
             #endif
 
-            //Custom: Fur Data (Alpha Dithering, Shading)
+            // Custom: Fur Data (Alpha Dithering, Shading)
             //#include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/LitData.hlsl"
             #include "FurData.hlsl"
 
-            //Custom: Flag for mesh modification for shell offsets.
+            // Custom: Flag for mesh modification for shell offsets.
             #define HAVE_MESH_MODIFICATION
             #include "FurVertex.hlsl"
 
@@ -663,7 +663,7 @@ Shader "Custom/Fur"
 
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Lighting/LightLoop/LightLoopDef.hlsl"
 
-            //Custom: Anisotropic fur shading.
+            // Custom: Anisotropic fur shading.
             //#include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.hlsl"
             #include "Fur.hlsl"
 
@@ -674,7 +674,7 @@ Shader "Custom/Fur"
             //#include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/LitData.hlsl"
             #include "FurData.hlsl"
     
-            //Custom: Flag for mesh modification for shell offsets.
+            // Custom: Flag for mesh modification for shell offsets.
             #define HAVE_MESH_MODIFICATION
             #include "FurVertex.hlsl"
 
