@@ -13,13 +13,13 @@ AttributesMesh ApplyMeshModification(AttributesMesh input)
     float4 tangentWS = float4(TransformObjectToWorldDir(input.tangentOS.xyz), input.tangentOS.w);
     real3x3 worldToTangent = CreateWorldToTangent(normalWS, tangentWS.xyz, tangentWS.w);
 
-    float4 combSample = SAMPLE_TEXTURE2D_LOD(_FurGroomMap, sampler_FurGroomMap, input.uv0, 0.0);
-    float3 combDirectionTS = UnpackNormalmapRGorAG(combSample, _FurCombStrength);
+    float4 combSample = SAMPLE_TEXTURE2D_LOD(_GroomCombMap, sampler_GroomCombMap, input.uv0, 0.0);
+    float3 combDirectionTS = UnpackNormalmapRGorAG(combSample, COMB_STRENGTH);
     combDirectionTS = float3(-combDirectionTS.x, combDirectionTS.yz);
     float3 combDirectionWS = normalize(TransformTangentToWorld(combDirectionTS, worldToTangent));
     //combDirectionWS = -Orthonormalize(combDirectionWS, worldToTangent[2]);
 
-    float h = SAMPLE_TEXTURE2D_LOD(_FurHeightMap, sampler_FurHeightMap, input.uv0.xy, 2);
+    float h = SAMPLE_TEXTURE2D_LOD(_GroomHeightMap, sampler_GroomHeightMap, input.uv0.xy, 2);
     h = lerp(0.3, 1.0, smoothstep(0.2, 0.3 , h));
 
     // Final position is derived from a quadratic blending function.

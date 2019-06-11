@@ -1,57 +1,48 @@
 // TODO: Investigate | Internal error communicating with the shader compiler process
 //CBUFFER_START(UnityPerMaterial)
 
-// TODO: Organize undercoats / overcoats etc. into layer input
-
 // Map Inputs
-TEXTURE3D(_FurGeometrySDF);
-SAMPLER(sampler_FurGeometrySDF);
+TEXTURE3D(_GeometryDistanceField);
+SAMPLER(sampler_GeometryDistanceField);
 
-TEXTURE2D(_FurGroomMap);
-SAMPLER(sampler_FurGroomMap);
+TEXTURE2D(_GroomDensityMap);
+SAMPLER(sampler_GroomDensityMap);
 
-TEXTURE2D(_FurHeightMap);
-SAMPLER(sampler_FurHeightMap);
+// TODO: Note on comb maps
+TEXTURE2D(_GroomCombMap);
+SAMPLER(sampler_GroomCombMap);
+
+TEXTURE2D(_GroomHeightMap);
+SAMPLER(sampler_GroomHeightMap);
 
 // Alpha 
-float _FurAlphaFalloff;
-float _FurAlphaFalloffBias;
-
-float2 _FurOvercoatAlphaRemap;
-float  _FurOvercoatSilhouette;
+float2 _AlphaRemap;
 
 // Grooming Inputs
-float _FurDensity;
-float _FurOvercoatDensity;
+float4 _GroomParams;
 
-float _FurShellHeight;
-float _FurShellMinimumHeight;
+// Shading Inputs 
+float4 _ShadingParams;
 
-float _FurCombStrength;
-float _FurOvercoatCombStrength;
-
-// Shading Inputs (Currently shared by overcoat + undercoat)
-float  _SpecularShift;
 float3 _SpecularTint;
-
-float  _SecondaryPerceptualSmoothness;
-float  _SecondarySpecularShift;
 float3 _SecondarySpecularTint;
+float3 _TransmissionTint;
+float3 _RootColor;
+float3 _TipColor;
 
-float  _FurScatter;
-float3 _FurScatterTint;
+// Unpack macros
+#define DENSITY                _GroomParams.x
+#define HEIGHT                 _GroomParams.y
+#define MIN_HEIGHT             _GroomParams.z
+#define COMB_STRENGTH          _GroomParams.w
 
-float _FurSelfOcclusionMultiplier;
-float _FurOvercoatSelfOcclusionMultiplier;
+#define SPECULAR_SHIFT_0       _ShadingParams.x
+#define SPECULAR_SHIFT_1       _ShadingParams.y
+#define SPECULAR_SMOOTHNESS_1  _ShadingParams.z
+#define TRANSMISSION_INTENSITY _ShadingParams.w
 
-float3 _FurOvercoatRootColor;
-float3 _FurOvercoatTipColor;
-
-float3 _FurUndercoatRootColor;
-float3 _FurUndercoatTipColor;
-
-// Currently shells are drawn one-by-one outward -> inwward (since we render opaque, reduce overdraw)
-// For alpha blending, shells must be draw inward -> outward
+// NOTE: Currently, shells are drawn one-by-one outward -> inwward (since we render opaque, reduce overdraw)
+//       For alpha blending, shells must be draw inward -> outward
 float _FurShellLayer;
 
 // TODO: Shell Instancing

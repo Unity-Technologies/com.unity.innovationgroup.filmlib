@@ -11,45 +11,6 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
 
         ReorderableList _coatLayers;
 
-        //Grooming Inputs
-        SerializedProperty _furDistanceField;
-        SerializedProperty _furDensity;
-        SerializedProperty _furAlphaRemapMin;
-        SerializedProperty _furAlphaRemapMax;
-        SerializedProperty _furCombMap;
-        SerializedProperty _furCombStrength;
-        SerializedProperty _furHeightMap;
-        SerializedProperty _furHeightRemapMin;
-        SerializedProperty _furHeightRemapMax;
-
-        //Shading Inputs
-        SerializedProperty _furSpecularShift;
-        SerializedProperty _furSpecularColor;
-        SerializedProperty _furSecondarySmoothness;
-        SerializedProperty _furSecondarySpecularShift;
-        SerializedProperty _furSecondarySpecularColor;
-        SerializedProperty _furScatter;
-        SerializedProperty _furScatterColor;
-        SerializedProperty _furSelfOcclusionTerm;
-        SerializedProperty _furAORemapMin;
-        SerializedProperty _furAORemapMax;
-
-        //Overcoat
-        SerializedProperty _furOvercoatDistanceField;
-        SerializedProperty _furOvercoatAlbedoMap;
-        SerializedProperty _furOvercoatColor;
-        SerializedProperty _furOvercoatDensity;
-        SerializedProperty _furOvercoatCombStrength;
-        SerializedProperty _furOvercoatHeightMap;
-        SerializedProperty _furOvercoatHeight;
-        SerializedProperty _furOvercoatAlphaRemap;
-        SerializedProperty _furOvercoatSilhouette;
-        SerializedProperty _furOvercoatAORemapMin;
-        SerializedProperty _furOvercoatAORemapMax;
-        SerializedProperty _furOvercoatSelfOcclusionTerm;
-        SerializedProperty _furOvercoatScatter;
-        SerializedProperty _furOvercoatScatterColor;
-
         void OnEnable()
         {
             // Coats
@@ -101,52 +62,86 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
 
         static class Styles
         {
-            public static readonly GUIContent AlphaRemap = new GUIContent("Alpha Remap");
-            public static readonly GUIContent HeightRemap = new GUIContent("Height Remap");
-            public static readonly GUIContent SelfOcclusionMultiplier = new GUIContent("Self Occlusion Muliplier");
-            public static readonly GUIContent AORemap = new GUIContent("Self Occlusion");
         }
         
         void DrawFurCoatLayer(SerializedProperty serializedCoatLayer)
         {
-            SerializedProperty distanceField = serializedCoatLayer.FindPropertyRelative("distanceField");
-            SerializedProperty alphaRemap    = serializedCoatLayer.FindPropertyRelative("alphaRemap");
-            SerializedProperty densityMap    = serializedCoatLayer.FindPropertyRelative("densityMap");
-            SerializedProperty density       = serializedCoatLayer.FindPropertyRelative("density");       
-            SerializedProperty heightMap     = serializedCoatLayer.FindPropertyRelative("heightMap");
-            SerializedProperty height        = serializedCoatLayer.FindPropertyRelative("height");       
-            SerializedProperty minimumHeight = serializedCoatLayer.FindPropertyRelative("minimumHeight");
-            SerializedProperty combMap       = serializedCoatLayer.FindPropertyRelative("combMap");
-            SerializedProperty combStrength  = serializedCoatLayer.FindPropertyRelative("combStrength");
-            SerializedProperty specularShift = serializedCoatLayer.FindPropertyRelative("specularShift");
-            SerializedProperty secondarySpecularShift = serializedCoatLayer.FindPropertyRelative("secondarySpecularShift");
-            SerializedProperty specularTint = serializedCoatLayer.FindPropertyRelative("specularTint");
-            SerializedProperty secondarySpecularTint = serializedCoatLayer.FindPropertyRelative("secondarySpecularTint");
+            SerializedProperty mode                        = serializedCoatLayer.FindPropertyRelative("mode");
+            SerializedProperty distanceField               = serializedCoatLayer.FindPropertyRelative("distanceField");
+            SerializedProperty alphaRemap                  = serializedCoatLayer.FindPropertyRelative("alphaRemap");
+            SerializedProperty densityMap                  = serializedCoatLayer.FindPropertyRelative("densityMap");
+            SerializedProperty density                     = serializedCoatLayer.FindPropertyRelative("density");       
+            SerializedProperty heightMap                   = serializedCoatLayer.FindPropertyRelative("heightMap");
+            SerializedProperty height                      = serializedCoatLayer.FindPropertyRelative("height");       
+            SerializedProperty minimumHeight               = serializedCoatLayer.FindPropertyRelative("minimumHeight");
+            SerializedProperty combMap                     = serializedCoatLayer.FindPropertyRelative("combMap");
+            SerializedProperty combStrength                = serializedCoatLayer.FindPropertyRelative("combStrength");
+            SerializedProperty specularShift               = serializedCoatLayer.FindPropertyRelative("specularShift");
+            SerializedProperty secondarySpecularShift      = serializedCoatLayer.FindPropertyRelative("secondarySpecularShift");
+            SerializedProperty specularTint                = serializedCoatLayer.FindPropertyRelative("specularTint");
+            SerializedProperty secondarySpecularTint       = serializedCoatLayer.FindPropertyRelative("secondarySpecularTint");
             SerializedProperty secondarySpecularSmoothness = serializedCoatLayer.FindPropertyRelative("secondarySpecularSmoothness");
-            SerializedProperty scatterAmount = serializedCoatLayer.FindPropertyRelative("scatterAmount");
-            SerializedProperty scatterTint = serializedCoatLayer.FindPropertyRelative("scatterTint");
-            SerializedProperty rootColor = serializedCoatLayer.FindPropertyRelative("rootColor");
-            SerializedProperty tipColor = serializedCoatLayer.FindPropertyRelative("tipColor");
+            SerializedProperty scatterAmount               = serializedCoatLayer.FindPropertyRelative("scatterAmount");
+            SerializedProperty scatterTint                 = serializedCoatLayer.FindPropertyRelative("scatterTint");
+            SerializedProperty rootColor                   = serializedCoatLayer.FindPropertyRelative("rootColor");
+            SerializedProperty tipColor                    = serializedCoatLayer.FindPropertyRelative("tipColor");
 
-            // TODO: Tidy up 
-            EditorGUILayout.PropertyField(distanceField);
+            // Render Fur Layer UI
+
+            EditorGUILayout.LabelField("Geometry", EditorStyles.boldLabel);
+            EditorGUI.indentLevel++;
+            
+            mode.enumValueIndex = (int)(FurGeometryMode)EditorGUILayout.EnumPopup(new GUIContent("Mode"), (FurGeometryMode)mode.enumValueIndex);
+            
+            // Expose inputs for analytic or baked distance field properties
+            EditorGUI.indentLevel++;
+            if(mode.enumValueIndex == (int)FurGeometryMode.Baked)
+            {
+                EditorGUILayout.PropertyField(distanceField);
+            }
+            else
+            {
+                // TODO
+            }
+            EditorGUI.indentLevel--;
+            
+            // TODO: Remap slider
             EditorGUILayout.PropertyField(alphaRemap);
+
+            EditorGUI.indentLevel--;
+
+            EditorGUILayout.Space(); 
+
+            EditorGUILayout.LabelField("Groom", EditorStyles.boldLabel);
+            EditorGUI.indentLevel++;
+            // TODO: Consolidate map + strengths 
             EditorGUILayout.PropertyField(densityMap);
             EditorGUILayout.PropertyField(density);
             EditorGUILayout.PropertyField(heightMap);
+            // TODO: Consolidate height to remaps
             EditorGUILayout.PropertyField(height);
             EditorGUILayout.PropertyField(minimumHeight);
             EditorGUILayout.PropertyField(combMap);
             EditorGUILayout.PropertyField(combStrength);
+            EditorGUI.indentLevel--;
+            
+            EditorGUILayout.Space(); 
+            
+            EditorGUILayout.LabelField("Shading", EditorStyles.boldLabel);
+            EditorGUI.indentLevel++;
             EditorGUILayout.PropertyField(specularShift);
-            EditorGUILayout.PropertyField(secondarySpecularShift);
             EditorGUILayout.PropertyField(specularTint);
+            EditorGUILayout.Space(); 
+            EditorGUILayout.PropertyField(secondarySpecularShift);
             EditorGUILayout.PropertyField(secondarySpecularTint);
             EditorGUILayout.PropertyField(secondarySpecularSmoothness);
+            EditorGUILayout.Space(); 
             EditorGUILayout.PropertyField(scatterAmount);
             EditorGUILayout.PropertyField(scatterTint);
+            EditorGUILayout.Space(); 
             EditorGUILayout.PropertyField(rootColor);
             EditorGUILayout.PropertyField(tipColor);
+            EditorGUI.indentLevel--;
             
         }
 
@@ -176,7 +171,9 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 layer.isExpanded = state;
             } 
             
-            //_renderers.DoLayoutList();
+            EditorGUILayout.Space();
+            
+            _renderers.DoLayoutList();
 
             serializedObject.ApplyModifiedProperties();
         }

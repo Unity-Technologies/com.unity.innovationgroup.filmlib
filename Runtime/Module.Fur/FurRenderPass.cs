@@ -87,7 +87,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
         void SetCoatLayerInputs(CommandBuffer cmd, FurCoatLayer layer)
         {
-            //TODO
+            // TODO
         }
 
         void FurShellDepthPass(ScriptableRenderContext context, HDCamera hdCamera, CullResults cull, CommandBuffer cmd,

@@ -102,35 +102,21 @@ float3 NormalFromDepth(uint2 positionCS)
 }
 
 // Coat input handling
-// TODO: Implement layered-style input system, supporting N fur coats
 float SelfOcclusionTerm()
 {
-    float occlusion = 1;
-
-
-
+    float  occlusion = 1;
     return occlusion;
 }
 
 float3 DiffuseColor(float2 uv)
 {
     float3 diffuseColor = 1;
-
-#ifdef FUR_OVERCOAT
-    diffuseColor *= SAMPLE_TEXTURE2D(_FurOvercoatAlbedoMap, sampler_FurOvercoatAlbedoMap, uv).rgb * _FurOvercoatColor;
-    //diffuseColor *= lerp(_FurOvercoatRootColor, _FurOvercoatTipColor, _FurShellLayer);
-#else
-    diffuseColor *= SAMPLE_TEXTURE2D(_BaseColorMap, sampler_BaseColorMap, uv).rgb * _BaseColor.rgb;
-    //diffuseColor *= lerp(_FurUndercoatRootColor, _FurUndercoatTipColor, step(0.6, _FurShellLayer));
-#endif
-
     return diffuseColor;
 }
 
 float Density()
 {
-    float density = 500;
-
+    float  density = 500 * DENSITY;
     return density;
 }
 
@@ -166,22 +152,22 @@ void GetSurfaceAndBuiltinData(FragInputs input, float3 V, inout PositionInputs p
     // NOTE: We calculate tangents on vertex stage, derived from the delta between shells.
     float3 T = normalize(input.color.xyz);
 
-    // Init Fur Data
-    surfaceData.materialFeatures = MATERIALFEATUREFLAGS_HAIR_KAJIYA_KAY;
-    surfaceData.diffuseColor = DiffuseColor(input.texCoord0.xy); 
-    surfaceData.normalWS = N;
-    surfaceData.geomNormalWS = input.worldToTangent[2];
-    surfaceData.perceptualSmoothness = _Smoothness;
-    surfaceData.transmittance = _FurScatterTint;
-    surfaceData.rimTransmissionIntensity = _FurScatter;
-    surfaceData.hairStrandDirectionWS = T; 
-    surfaceData.secondaryPerceptualSmoothness = _SecondaryPerceptualSmoothness;
-    surfaceData.specularTint = _SpecularTint;
-    surfaceData.secondarySpecularTint = _SecondarySpecularTint;
-    surfaceData.specularShift = _SpecularShift;
-    surfaceData.secondarySpecularShift = _SecondarySpecularShift;
-    surfaceData.ambientOcclusion = SelfOcclusionTerm();
-    surfaceData.specularOcclusion = GetSpecularOcclusionFromAmbientOcclusion(ClampNdotV(dot(surfaceData.normalWS, V)), surfaceData.ambientOcclusion, PerceptualSmoothnessToRoughness(surfaceData.perceptualSmoothness));
+    // Init Fur Coat Layer Data
+    surfaceData.materialFeatures              = MATERIALFEATUREFLAGS_HAIR_KAJIYA_KAY;
+    surfaceData.diffuseColor                  = DiffuseColor(input.texCoord0.xy); 
+    surfaceData.normalWS                      = N;
+    surfaceData.geomNormalWS                  = input.worldToTangent[2];
+    surfaceData.transmittance                 = _TransmissionTint;
+    surfaceData.rimTransmissionIntensity      = TRANSMISSION_INTENSITY;
+    surfaceData.hairStrandDirectionWS         = T; 
+    surfaceData.perceptualSmoothness          = _Smoothness;
+    surfaceData.secondaryPerceptualSmoothness = SPECULAR_SMOOTHNESS_1;
+    surfaceData.specularTint                  = _SpecularTint;
+    surfaceData.secondarySpecularTint         = _SecondarySpecularTint;
+    surfaceData.specularShift                 = SPECULAR_SHIFT_0;
+    surfaceData.secondarySpecularShift        = SPECULAR_SHIFT_1;
+    surfaceData.ambientOcclusion              = SelfOcclusionTerm();
+    surfaceData.specularOcclusion             = GetSpecularOcclusionFromAmbientOcclusion(ClampNdotV(dot(surfaceData.normalWS, V)), surfaceData.ambientOcclusion, PerceptualSmoothnessToRoughness(surfaceData.perceptualSmoothness));
 
     // Builtin Data
     // For back lighting we use the oposite vertex normal 
