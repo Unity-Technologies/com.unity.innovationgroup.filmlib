@@ -15,8 +15,8 @@ SAMPLER(sampler_GroomCombMap);
 TEXTURE2D(_GroomHeightMap);
 SAMPLER(sampler_GroomHeightMap);
 
-// Alpha 
-float2 _AlphaRemap;
+// Geometry Inputs 
+float4 _GeometryParams;
 
 // Grooming Inputs
 float4 _GroomParams;
@@ -24,6 +24,7 @@ float4 _GroomParams;
 // Shading Inputs 
 float4 _ShadingParams;
 
+// Color Inputs
 float3 _SpecularTint;
 float3 _SecondarySpecularTint;
 float3 _TransmissionTint;
@@ -31,6 +32,11 @@ float3 _RootColor;
 float3 _TipColor;
 
 // Unpack macros
+#define GEOMETRY_MODE          _GeometryParams.x
+#define STRAND_CURL            _GeometryParams.y
+#define STRAND_OFFSET          _GeometryParams.z
+#define ALPHA_CUTOFF           _GeometryParams.w
+
 #define DENSITY                _GroomParams.x
 #define HEIGHT                 _GroomParams.y
 #define MIN_HEIGHT             _GroomParams.z

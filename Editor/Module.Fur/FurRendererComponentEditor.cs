@@ -1,14 +1,17 @@
 ﻿using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Experimental.Rendering;
+using UnityEngine.Experimental.Rendering.HDPipeline;
+
 using UnityEditor;
 using UnityEditorInternal;
 
 namespace UnityEditor.Experimental.Rendering.HDPipeline
 {
-    [CustomEditor(typeof(FurRenderer))]
-    sealed class FurRendererEditor : Editor
+    [CustomEditor(typeof(FurRendererComponent))]
+    sealed class FurRendererComponentEditor : Editor
     {
         ReorderableList _renderers;
-
         ReorderableList _coatLayers;
 
         void OnEnable()
@@ -68,7 +71,9 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         {
             SerializedProperty mode                        = serializedCoatLayer.FindPropertyRelative("mode");
             SerializedProperty distanceField               = serializedCoatLayer.FindPropertyRelative("distanceField");
-            SerializedProperty alphaRemap                  = serializedCoatLayer.FindPropertyRelative("alphaRemap");
+            SerializedProperty strandOffset                = serializedCoatLayer.FindPropertyRelative("strandOffset");
+            SerializedProperty strandCurl                  = serializedCoatLayer.FindPropertyRelative("strandCurl");
+            SerializedProperty alphaCutoff                 = serializedCoatLayer.FindPropertyRelative("alphaCutoff");
             SerializedProperty densityMap                  = serializedCoatLayer.FindPropertyRelative("densityMap");
             SerializedProperty density                     = serializedCoatLayer.FindPropertyRelative("density");       
             SerializedProperty heightMap                   = serializedCoatLayer.FindPropertyRelative("heightMap");
@@ -101,12 +106,13 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             }
             else
             {
-                // TODO
+                EditorGUILayout.PropertyField(strandOffset);
+                EditorGUILayout.PropertyField(strandCurl);
             }
             EditorGUI.indentLevel--;
             
             // TODO: Remap slider
-            EditorGUILayout.PropertyField(alphaRemap);
+            EditorGUILayout.PropertyField(alphaCutoff);
 
             EditorGUI.indentLevel--;
 

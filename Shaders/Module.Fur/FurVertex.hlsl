@@ -32,7 +32,7 @@ AttributesMesh ApplyMeshModification(AttributesMesh input)
         float  U;
 
         //Blend inputs
-        D  = h * 0.05 * (normalWS + combDirectionWS);
+        D  = HEIGHT * 0.1 * (normalWS + 0);
         P0 = positionWS;
         P1 = P0 +  D;
         PC = P0 + (D * 0.5);

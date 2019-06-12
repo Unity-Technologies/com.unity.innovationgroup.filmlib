@@ -4,7 +4,8 @@
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Sampling/SampleUVMapping.hlsl"
 #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/MaterialUtilities.hlsl"
 
-// TODO: Find dither pattern that converges with TAA
+// TODO: Find dither pattern that converges with TAA (blue noise?)
+// TODO: Note on dither + super sampling.
 float _SuperSampleSubFrame;
 void DitherTransparency(float alpha, float2 position)
 {
@@ -14,6 +15,7 @@ void DitherTransparency(float alpha, float2 position)
     clip(alpha - nrnd);
 }
 
+// TODO: More exotic distance field to capture curling, etc.
 float SignedDistanceField_Cone(float q, float z, float2 c)
 {
    return dot(c, float2(q, z));
@@ -53,13 +55,13 @@ float VoronoiDistance( in float2 x, float w, float strength)
 
 float SampleFur_Analytic(in float3 p)
 {
-   //Parametrize the cone geometric description
+   // TODO: Parametrize the cone geometric description
    float2 c = normalize(float2(10, 2));
 
-   //Break up the distance field repetition pattern.
-   float sd = VoronoiDistance(p.xy, 1.0, 1.0);
+   // Break up the distance field repetition pattern.
+   float sd = VoronoiDistance(p.xy, 1.0, STRAND_OFFSET);
 
-   //Submit to SDF
+   // Submit to SDF
    return 1.0 - SignedDistanceField_Cone(sd, p.z, c);
 }
 
@@ -104,8 +106,7 @@ float3 NormalFromDepth(uint2 positionCS)
 // Coat input handling
 float SelfOcclusionTerm()
 {
-    float  occlusion = 1;
-    return occlusion;
+    return _FurShellLayer * (1 - 0.0) + 0.0;
 }
 
 float3 DiffuseColor(float2 uv)
@@ -132,17 +133,21 @@ void GetSurfaceAndBuiltinData(FragInputs input, float3 V, inout PositionInputs p
 
     ApplyDoubleSidedFlipOrMirror(input, doubleSidedConstants);
 
-    // Sample the fur distance field (analytic or baked).
-    float alpha = SAMPLE_FUR(float3(Density() * input.texCoord0.xy, _FurShellLayer));
+    float2 texcoord = input.texCoord0.xy;
 
+    // Sample the fur distance field (analytic or baked).
+    float alpha = SAMPLE_FUR(float3(Density() * texcoord, _FurShellLayer));
+
+#if SHADERPASS == SHADERPASS_DEPTH_ONLY
     // TODO: Note on alpha modes.
-    // TODO: Necesarry on forward pass?
-#ifdef ALPHA_DITHER
-    // We smoothstep + dither to achieve soft falloffs.
-    // TODO: Factor fur shell height.
-    DitherTransparency(smoothstep(0.1, 0.2, alpha));
-#else
-    clip(step(_Metallic, alpha) - 0.0001);
+    #ifdef ALPHA_DITHER
+        // We smoothstep + dither to achieve soft falloffs.
+        // TODO: Factor fur shell height.
+        // TODO: Replace y/z geometry inputs with alpha falloffs (replace geometry mode)
+        DitherTransparency(smoothstep(0.1, 0.2, alpha));
+    #else
+        clip(step(ALPHA_CUTOFF, alpha) - 0.0001);
+    #endif
 #endif
 
     // NOTE: Currently we derive normals from depth, in future investigate deriving combed normal from
@@ -154,7 +159,7 @@ void GetSurfaceAndBuiltinData(FragInputs input, float3 V, inout PositionInputs p
 
     // Init Fur Coat Layer Data
     surfaceData.materialFeatures              = MATERIALFEATUREFLAGS_HAIR_KAJIYA_KAY;
-    surfaceData.diffuseColor                  = DiffuseColor(input.texCoord0.xy); 
+    surfaceData.diffuseColor                  = DiffuseColor(texcoord); 
     surfaceData.normalWS                      = N;
     surfaceData.geomNormalWS                  = input.worldToTangent[2];
     surfaceData.transmittance                 = _TransmissionTint;

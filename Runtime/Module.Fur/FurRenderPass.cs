@@ -20,7 +20,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
     public sealed class FurRenderPass : MonoBehaviour
     {
         // Currently shell count is internally set, in the future, this needs to be converted to per-renderer setting
-        const int kShellCount = 128;
+        const int kShellCount = 32;
 
         static class ShaderIDs
         {
