@@ -7,7 +7,8 @@
         "Unity.Postprocessing.Runtime",
         "Unity.RenderPipelines.Core.Runtime",
         "Unity.Postprocessing.Editor",
-        "Unity.RenderPipelines.Core.Editor"
+        "Unity.RenderPipelines.Core.Editor",
+        "com.unity.innovation.filmlib.shader"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [

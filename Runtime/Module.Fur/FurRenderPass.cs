@@ -49,16 +49,16 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             hdCamera.afterForwardOpaque += FurShellForwardOpaquePass;
         
             //We also would like to add this renderpass to the SceneView camera.
-            //foreach (SceneView sv in SceneView.sceneViews)
-            //{
-            //    Camera cc = sv.camera;
-            //    if (cc.GetComponent<HDAdditionalCameraData>() == null)
-            //    {
-            //        var hdSceneCamera = cc.gameObject.AddComponent<HDAdditionalCameraData>();
-            //        hdSceneCamera.afterDepthPrepass  += FurShellDepthPass;
-            //        hdSceneCamera.afterForwardOpaque += FurShellOpaquePass; 
-            //    }
-            //}
+            foreach (SceneView sv in SceneView.sceneViews)
+            {
+                Camera cc = sv.camera;
+                if (cc.GetComponent<HDAdditionalCameraData>() == null)
+                {
+                    var hdSceneCamera = cc.gameObject.AddComponent<HDAdditionalCameraData>();
+                    hdSceneCamera.afterDepthPrepass  += FurShellDepthPass;
+                    hdSceneCamera.afterForwardOpaque += FurShellForwardOpaquePass; 
+                }
+            }
         }
 
         void OnDisable()
@@ -73,16 +73,16 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             hdCamera.afterForwardOpaque -= FurShellForwardOpaquePass;
 
             //Remove renderpass from SceneView as well.
-            //foreach (SceneView sv in SceneView.sceneViews)
-            //{
-            //    Camera cc = sv.camera;
-            //    if (cc.GetComponent<HDAdditionalCameraData>() != null)
-            //    {
-            //        var hdSceneCamera = cc.gameObject.GetComponent<HDAdditionalCameraData>();
-            //        hdSceneCamera.afterDepthPrepass  -= FurShellDepthPass;
-            //        hdSceneCamera.afterForwardOpaque -= FurShellOpaquePass; 
-            //    }
-            //}
+            foreach (SceneView sv in SceneView.sceneViews)
+            {
+                Camera cc = sv.camera;
+                if (cc.GetComponent<HDAdditionalCameraData>() != null)
+                {
+                    var hdSceneCamera = cc.gameObject.GetComponent<HDAdditionalCameraData>();
+                    hdSceneCamera.afterDepthPrepass  -= FurShellDepthPass;
+                    hdSceneCamera.afterForwardOpaque -= FurShellForwardOpaquePass; 
+                }
+            }
         }
 
         void SetCoatLayerInputs(CommandBuffer cmd, FurCoatLayer layer)
