@@ -8,7 +8,7 @@ using UnityEditor;
 Fur Render Pass
 
 This requires a slightly modified version of the HD Render Pipeline containing lightweight render callbacks.
-This render pass plugs into those callback, injecting the fur shell passes.
+This render pass plugs into those callbacks, injecting the fur shell passes.
 
 */
 

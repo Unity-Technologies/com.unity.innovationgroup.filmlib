@@ -71,14 +71,10 @@ float SampleFur_Baked(in float3 p)
     return 0;
 }
 
-// TODO : Move to intermediate pass.
+// TODO : Move off forward to intermediate pass.
 float3 NormalFromDepth(uint2 positionCS)
 {
     uint2 pixCoord = (uint2)positionCS.xy >> 0;
-
-    // NOTE: Y-Flip in scene view camera.
-    //pixCoord.y = _ScreenSize.y - pixCoord.y;
-                    
     pixCoord += 1;
                     
     float depth     = LOAD_TEXTURE2D(_DepthPyramidTexture, pixCoord).r;
@@ -86,39 +82,39 @@ float3 NormalFromDepth(uint2 positionCS)
     float depth_ddy = LOAD_TEXTURE2D(_DepthPyramidTexture, pixCoord + int2(0,1)).r;
 
     float2 uv = (pixCoord * _ScreenSize.zw);
-    float2 uv_ox = uv + float2(1.f/_ScreenSize.x,0);
-    float2 uv_oy = uv + float2(0,1.f/_ScreenSize.y);
-    float2 ndc = (uv - 0.5) * 2.f;
-    float2 ndc_ddx = (uv_ox - 0.5) * 2.f;
-    float2 ndc_ddy = (uv_oy - 0.5) * 2.f;
+    float2 uv_ox = uv + float2(1.0 / _ScreenSize.x, 0.0);
+    float2 uv_oy = uv + float2(0.0, 1.0 / _ScreenSize.y);
 
-    float3 wp     = ComputeWorldSpacePosition(ndc, depth, UNITY_MATRIX_I_VP);
+    float2 ndc = (uv - 0.5) * 2.0;
+    float2 ndc_ddx = (uv_ox - 0.5) * 2.0;
+    float2 ndc_ddy = (uv_oy - 0.5) * 2.0;
+
+    float3 wp     = ComputeWorldSpacePosition(ndc,     depth,     UNITY_MATRIX_I_VP);
     float3 wp_ddx = ComputeWorldSpacePosition(ndc_ddx, depth_ddx, UNITY_MATRIX_I_VP);
     float3 wp_ddy = ComputeWorldSpacePosition(ndc_ddy, depth_ddy, UNITY_MATRIX_I_VP);
 
     float3 vec_ddx = (wp_ddx - wp);
     float3 vec_ddy = (wp_ddy - wp);
     float3 N = cross(vec_ddx, vec_ddy);
-
     return -normalize(N);
 }
 
-// Coat input handling
 float SelfOcclusionTerm()
 {
-    return _FurShellLayer * (1 - 0.0) + 0.0;
+    float shadowMin = SELF_SHADOW;
+    return _FurShellLayer * (1 - shadowMin) + shadowMin;
 }
 
 float3 DiffuseColor(float2 uv)
 {
-    float3 diffuseColor = 1;
+    float3 diffuseColor = _BaseColor;
+    diffuseColor *= lerp(_RootColor, _TipColor, _FurShellLayer);
     return diffuseColor;
 }
 
-float Density()
+float2 DensityUV(float2 texcoord)
 {
-    float  density = 500 * DENSITY;
-    return density;
+    return 500 * DENSITY * texcoord;
 }
 
 #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/BuiltinUtilities.hlsl"
@@ -136,15 +132,17 @@ void GetSurfaceAndBuiltinData(FragInputs input, float3 V, inout PositionInputs p
     float2 texcoord = input.texCoord0.xy;
 
     // Sample the fur distance field (analytic or baked).
-    float alpha = SAMPLE_FUR(float3(Density() * texcoord, _FurShellLayer));
+    // TODO: Note on distance fields.
+    float3 distanceFieldInput = float3(DensityUV(texcoord), _FurShellLayer);
+    float alpha = SAMPLE_FUR(distanceFieldInput);
 
 #if SHADERPASS == SHADERPASS_DEPTH_ONLY
     // TODO: Note on alpha modes.
-    #ifdef ALPHA_DITHER
+    #if 1
         // We smoothstep + dither to achieve soft falloffs.
-        // TODO: Factor fur shell height.
-        // TODO: Replace y/z geometry inputs with alpha falloffs (replace geometry mode)
-        DitherTransparency(smoothstep(0.1, 0.2, alpha));
+        // Dither can be combined with a convergence engine (TAA, Super Sample, etc. for OIT)
+        // TODO: Alpha feather
+        DitherTransparency(smoothstep(ALPHA_CUTOFF, min(ALPHA_CUTOFF + ALPHA_FEATHER, 1), alpha), posInput.positionSS);
     #else
         clip(step(ALPHA_CUTOFF, alpha) - 0.0001);
     #endif
@@ -155,7 +153,7 @@ void GetSurfaceAndBuiltinData(FragInputs input, float3 V, inout PositionInputs p
     float3 N = NormalFromDepth(posInput.positionSS);
 
     // NOTE: We calculate tangents on vertex stage, derived from the delta between shells.
-    float3 T = normalize(input.color.xyz);
+    float3 T = Orthonormalize(input.color.xyz, N);
 
     // Init Fur Coat Layer Data
     surfaceData.materialFeatures              = MATERIALFEATUREFLAGS_HAIR_KAJIYA_KAY;
@@ -171,10 +169,11 @@ void GetSurfaceAndBuiltinData(FragInputs input, float3 V, inout PositionInputs p
     surfaceData.secondarySpecularTint         = _SecondarySpecularTint;
     surfaceData.specularShift                 = SPECULAR_SHIFT_0;
     surfaceData.secondarySpecularShift        = SPECULAR_SHIFT_1;
-    surfaceData.ambientOcclusion              = SelfOcclusionTerm();
+    surfaceData.ambientOcclusion              = SelfOcclusionTerm(); 
     surfaceData.specularOcclusion             = GetSpecularOcclusionFromAmbientOcclusion(ClampNdotV(dot(surfaceData.normalWS, V)), surfaceData.ambientOcclusion, PerceptualSmoothnessToRoughness(surfaceData.perceptualSmoothness));
 
     // Builtin Data
     // For back lighting we use the oposite vertex normal 
     InitBuiltinData(alpha, surfaceData.normalWS, -N, input.positionRWS, input.texCoord1, input.texCoord2, builtinData);
+    PostInitBuiltinData(V, posInput, surfaceData, builtinData);
 }

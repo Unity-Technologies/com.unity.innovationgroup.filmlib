@@ -18,6 +18,9 @@ SAMPLER(sampler_GroomHeightMap);
 // Geometry Inputs 
 float4 _GeometryParams;
 
+// Alpha Inputs
+float4 _AlphaParams;
+
 // Grooming Inputs
 float4 _GroomParams;
 
@@ -35,7 +38,11 @@ float3 _TipColor;
 #define GEOMETRY_MODE          _GeometryParams.x
 #define STRAND_CURL            _GeometryParams.y
 #define STRAND_OFFSET          _GeometryParams.z
-#define ALPHA_CUTOFF           _GeometryParams.w
+
+#define ALPHA_MODE             _AlphaParams.x
+#define ALPHA_CUTOFF           _AlphaParams.y
+#define ALPHA_FEATHER          _AlphaParams.z
+#define SELF_SHADOW            _AlphaParams.w
 
 #define DENSITY                _GroomParams.x
 #define HEIGHT                 _GroomParams.y

@@ -69,11 +69,13 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
         
         void DrawFurCoatLayer(SerializedProperty serializedCoatLayer)
         {
-            SerializedProperty mode                        = serializedCoatLayer.FindPropertyRelative("mode");
+            SerializedProperty geometryMode                = serializedCoatLayer.FindPropertyRelative("geometryMode");
             SerializedProperty distanceField               = serializedCoatLayer.FindPropertyRelative("distanceField");
             SerializedProperty strandOffset                = serializedCoatLayer.FindPropertyRelative("strandOffset");
             SerializedProperty strandCurl                  = serializedCoatLayer.FindPropertyRelative("strandCurl");
+            SerializedProperty alphaMode                   = serializedCoatLayer.FindPropertyRelative("alphaMode");
             SerializedProperty alphaCutoff                 = serializedCoatLayer.FindPropertyRelative("alphaCutoff");
+            SerializedProperty alphaFeather                = serializedCoatLayer.FindPropertyRelative("alphaFeather");
             SerializedProperty densityMap                  = serializedCoatLayer.FindPropertyRelative("densityMap");
             SerializedProperty density                     = serializedCoatLayer.FindPropertyRelative("density");       
             SerializedProperty heightMap                   = serializedCoatLayer.FindPropertyRelative("heightMap");
@@ -90,17 +92,17 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             SerializedProperty scatterTint                 = serializedCoatLayer.FindPropertyRelative("scatterTint");
             SerializedProperty rootColor                   = serializedCoatLayer.FindPropertyRelative("rootColor");
             SerializedProperty tipColor                    = serializedCoatLayer.FindPropertyRelative("tipColor");
+            SerializedProperty selfShadow                  = serializedCoatLayer.FindPropertyRelative("selfShadow");
 
             // Render Fur Layer UI
 
             EditorGUILayout.LabelField("Geometry", EditorStyles.boldLabel);
             EditorGUI.indentLevel++;
             
-            mode.enumValueIndex = (int)(FurGeometryMode)EditorGUILayout.EnumPopup(new GUIContent("Mode"), (FurGeometryMode)mode.enumValueIndex);
+            geometryMode.enumValueIndex = (int)(FurGeometryMode)EditorGUILayout.EnumPopup(new GUIContent("Mode"), (FurGeometryMode)geometryMode.enumValueIndex);
             
-            // Expose inputs for analytic or baked distance field properties
             EditorGUI.indentLevel++;
-            if(mode.enumValueIndex == (int)FurGeometryMode.Baked)
+            if(geometryMode.enumValueIndex == (int)FurGeometryMode.Baked)
             {
                 EditorGUILayout.PropertyField(distanceField);
             }
@@ -110,10 +112,22 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                 EditorGUILayout.PropertyField(strandCurl);
             }
             EditorGUI.indentLevel--;
+            EditorGUI.indentLevel--;
             
-            // TODO: Remap slider
-            EditorGUILayout.PropertyField(alphaCutoff);
+            EditorGUILayout.Space();
 
+            EditorGUILayout.LabelField("Alpha", EditorStyles.boldLabel);
+            EditorGUI.indentLevel++;
+
+            alphaMode.enumValueIndex = (int)(FurAlphaMode)EditorGUILayout.EnumPopup(new GUIContent("Mode"), (FurAlphaMode)alphaMode.enumValueIndex);
+            
+            EditorGUI.indentLevel++;
+            EditorGUILayout.PropertyField(alphaCutoff);
+            if(alphaMode.enumValueIndex == (int)FurAlphaMode.Dither)
+            {
+                EditorGUILayout.PropertyField(alphaFeather);
+            }
+            EditorGUI.indentLevel--;
             EditorGUI.indentLevel--;
 
             EditorGUILayout.Space(); 
@@ -135,18 +149,26 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             
             EditorGUILayout.LabelField("Shading", EditorStyles.boldLabel);
             EditorGUI.indentLevel++;
-            EditorGUILayout.PropertyField(specularShift);
-            EditorGUILayout.PropertyField(specularTint);
+            EditorGUILayout.LabelField("Lobe 1", EditorStyles.miniBoldLabel);
+            EditorGUILayout.PropertyField(specularShift, new GUIContent("Shift"));
+            EditorGUILayout.PropertyField(specularTint, new GUIContent("Tint"));
             EditorGUILayout.Space(); 
-            EditorGUILayout.PropertyField(secondarySpecularShift);
-            EditorGUILayout.PropertyField(secondarySpecularTint);
-            EditorGUILayout.PropertyField(secondarySpecularSmoothness);
+            EditorGUILayout.LabelField("Lobe 2", EditorStyles.miniBoldLabel);
+            EditorGUILayout.PropertyField(secondarySpecularSmoothness, new GUIContent("Smoothness"));
+            EditorGUILayout.PropertyField(secondarySpecularShift, new GUIContent("Shift"));
+            EditorGUILayout.PropertyField(secondarySpecularTint, new GUIContent("Tint"));
             EditorGUILayout.Space(); 
-            EditorGUILayout.PropertyField(scatterAmount);
-            EditorGUILayout.PropertyField(scatterTint);
+            EditorGUILayout.LabelField("Scatter", EditorStyles.miniBoldLabel);
+            EditorGUILayout.PropertyField(scatterAmount, new GUIContent("Intensity"));
+            EditorGUILayout.PropertyField(scatterTint, new GUIContent("Tint"));
             EditorGUILayout.Space(); 
-            EditorGUILayout.PropertyField(rootColor);
-            EditorGUILayout.PropertyField(tipColor);
+            EditorGUILayout.LabelField("Albedo", EditorStyles.miniBoldLabel);
+            EditorGUILayout.PropertyField(rootColor, new GUIContent("Root"));
+            EditorGUILayout.PropertyField(tipColor, new GUIContent("Tip"));
+
+            EditorGUILayout.Space();
+
+            EditorGUILayout.PropertyField(selfShadow);
             EditorGUI.indentLevel--;
             
         }
