@@ -47,6 +47,7 @@ float VoronoiDistance( in float2 x, float w, float strength)
     return m;
 }
 
+// NOTE: Force analytic always on until we can use keywords.
 #if 1 // TODO: Directive for analytic / baked.
     #define SAMPLE_FUR SampleFur_Analytic
 #else
@@ -102,19 +103,20 @@ float3 NormalFromDepth(uint2 positionCS)
 float SelfOcclusionTerm()
 {
     float shadowMin = SELF_SHADOW;
-    return _FurShellLayer * (1 - shadowMin) + shadowMin;
+    return SHELL_LAYER * (1 - shadowMin) + shadowMin;
 }
 
 float3 DiffuseColor(float2 uv)
 {
     float3 diffuseColor = _BaseColor;
-    diffuseColor *= lerp(_RootColor, _TipColor, _FurShellLayer);
+    diffuseColor *= lerp(_RootColor, _TipColor, SHELL_LAYER);
     return diffuseColor;
 }
 
 float2 DensityUV(float2 texcoord)
 {
-    return 500 * DENSITY * texcoord;
+    float densitySample = SAMPLE_TEXTURE2D(_GroomDensityMap, sampler_GroomDensityMap, texcoord);
+    return 500.0 * (densitySample * DENSITY) * texcoord;
 }
 
 #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/BuiltinUtilities.hlsl"
@@ -133,11 +135,12 @@ void GetSurfaceAndBuiltinData(FragInputs input, float3 V, inout PositionInputs p
 
     // Sample the fur distance field (analytic or baked).
     // TODO: Note on distance fields.
-    float3 distanceFieldInput = float3(DensityUV(texcoord), _FurShellLayer);
+    float3 distanceFieldInput = float3(DensityUV(texcoord), SHELL_LAYER);
     float alpha = SAMPLE_FUR(distanceFieldInput);
 
 #if SHADERPASS == SHADERPASS_DEPTH_ONLY
     // TODO: Note on alpha modes.
+    // NOTE: Currently force alpha dither always on until we can use keywords
     #if 1
         // We smoothstep + dither to achieve soft falloffs.
         // Dither can be combined with a convergence engine (TAA, Super Sample, etc. for OIT)

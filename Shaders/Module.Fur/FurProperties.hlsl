@@ -56,13 +56,16 @@ float3 _TipColor;
 
 // NOTE: Currently, shells are drawn one-by-one outward -> inwward (since we render opaque, reduce overdraw)
 //       For alpha blending, shells must be draw inward -> outward
-float _FurShellLayer;
+float4 _FurSystemParams;
+
+#define SHELL_LAYER            _FurSystemParams.x
+#define SHELL_DELTA            _FurSystemParams.y
 
 // TODO: Shell Instancing
 /*
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/UnityInstancing.hlsl"
 UNITY_INSTANCING_BUFFER_START(Fur)
-    UNITY_DEFINE_INSTANCED_PROP(float, _FurShellLayer)
+    UNITY_DEFINE_INSTANCED_PROP(float4, _FurSystemParams)
 UNITY_INSTANCING_BUFFER_END(Fur)
 */
 

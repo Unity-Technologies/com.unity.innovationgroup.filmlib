@@ -529,7 +529,7 @@ Shader "HDRP/Film/Fur"
 
             ENDHLSL
         }
-
+        
         // CUSTOM: Fur Shell Opaque
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Pass
@@ -559,7 +559,6 @@ Shader "HDRP/Film/Fur"
             #define ATTRIBUTES_NEED_COLOR // NOTE: We pack strand tangent into color.
             
             //Custom: Extra fur compiles
-            #pragma multi_compile _ FUR_OVERCOAT //TODO: Remove once we implement layer system.
             #pragma multi_compile ALPHA_CUTOUT ALPHA_DITHER
 
             // In deferred, depth only pass don't output anything.
@@ -627,7 +626,6 @@ Shader "HDRP/Film/Fur"
             #define ATTRIBUTES_NEED_COLOR // NOTE: We pack strand tangent into color.
 
             //Custom: Extra fur compiles
-            #pragma multi_compile _ FUR_OVERCOAT //TODO: Remove once we implement layer system.
             #pragma multi_compile ALPHA_CUTOUT ALPHA_DITHER
 
             #pragma multi_compile _ DEBUG_DISPLAY

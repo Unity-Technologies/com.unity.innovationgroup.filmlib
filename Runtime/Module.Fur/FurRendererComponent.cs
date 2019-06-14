@@ -104,6 +104,17 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             public static readonly int _TipColor                    = Shader.PropertyToID("_TipColor");
         }
 
+        void SetMap(int shaderID, Texture map, Texture defaultMap)
+        {
+            if(map != null)
+            {
+                _sheet.SetTexture(shaderID, map);
+            }
+            else
+            {
+                _sheet.SetTexture(shaderID, defaultMap);
+            }
+        }
 
         void LateUpdate()
         {
@@ -123,10 +134,15 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                     FurCoatLayer _ = _coatLayers[i];
                     
                     // Map inputs
+                    // Can't enable shader keyword from material prop block, so we fall back to default map type if none assigned
                     if(_.distanceField != null) _sheet.SetTexture(ShaderIDs._GeometryDistanceField, _.distanceField);
-                    if(_.densityMap    != null) _sheet.SetTexture(ShaderIDs._GroomDensityMap,       _.densityMap);
-                    if(_.heightMap     != null) _sheet.SetTexture(ShaderIDs._GroomHeightMap,        _.heightMap);
-                    if(_.combMap       != null) _sheet.SetTexture(ShaderIDs._GroomCombMap,          _.combMap);
+                    SetMap(ShaderIDs._GroomDensityMap, _.densityMap, Texture2D.whiteTexture);
+                    SetMap(ShaderIDs._GroomHeightMap,  _.heightMap,  Texture2D.whiteTexture);
+                    SetMap(ShaderIDs._GroomCombMap,    _.combMap,    Texture2D.blackTexture);
+                    
+                    //if(_.densityMap    != null) _sheet.SetTexture(ShaderIDs._GroomDensityMap,       _.densityMap);
+                    //if(_.heightMap     != null) _sheet.SetTexture(ShaderIDs._GroomHeightMap,        _.heightMap);
+                    //if(_.combMap       != null) _sheet.SetTexture(ShaderIDs._GroomCombMap,          _.combMap);
 
                     // Param Inputs
                     _sheet.SetVector(ShaderIDs._GeometryParams, new Vector4((int)_.geometryMode, _.strandCurl, _.strandOffset, 0f)); // W: Unused 

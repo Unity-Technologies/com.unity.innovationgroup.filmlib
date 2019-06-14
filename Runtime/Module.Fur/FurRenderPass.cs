@@ -20,10 +20,12 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
     public sealed class FurRenderPass : MonoBehaviour
     {
         // Currently shell count is internally set, in the future, this needs to be converted to per-renderer setting
+        // TODO: Temporarily add to UI
         const int kShellCount = 32;
 
         static class ShaderIDs
         {
+            public static readonly int _FurSystemParams = Shader.PropertyToID("_FurSystemParams");
             public static readonly int _FurShellLayer = Shader.PropertyToID("_FurShellLayer");
         }
 
@@ -95,17 +97,19 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         {
             using (new ProfilingSample(cmd, "Fur (Depth) (Under Coats)"))
             {
-                CoreUtils.SetKeyword(cmd, "FUR_OVERCOAT", false);
+                float shellDelta = 1f / (float)kShellCount;
 
-                //TODO: Per-renderer shell count.
-                for (int s = kShellCount; s >= 0; --s)
+                // TODO: Per-renderer shell count.
+                // NOTE: Currently skip 0th shell due to zfight issue. Bandaid fix.
+                for (int s = kShellCount; s >= 1; --s)
                 {
-                    cmd.SetGlobalFloat(ShaderIDs._FurShellLayer, (float)s / kShellCount);
+                    float shellLayer = (float)s / kShellCount;
+
+                    cmd.SetGlobalFloat(ShaderIDs._FurShellLayer, shellLayer);
+                    cmd.SetGlobalVector(ShaderIDs._FurSystemParams, new Vector4( shellLayer, shellDelta, 0f, 0f));
                     RenderShellLayer(hdCamera, cmd, cull, context, ShaderPassNames._FurShellDepthName);
                 }
             }
-
-            //TODO: Overcoats.
         }
         
         void FurShellDepthPassInstanced(ScriptableRenderContext context, HDCamera hdCamera, CullResults cull, CommandBuffer cmd,
@@ -121,17 +125,19 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         {
             using (new ProfilingSample(cmd, "Fur (Opaque) (Under Coats)"))
             {
-                CoreUtils.SetKeyword(cmd, "FUR_OVERCOAT", false);
-                
-                //TODO: Per-renderer shell count.
-                for (int s = kShellCount; s >= 0; --s)
+                float shellDelta = 1f / (float)kShellCount;
+
+                // TODO: Per-renderer shell count.
+                // NOTE: Currently skip 0th shell due to zfight issue. Bandaid fix.
+                for (int s = kShellCount; s >= 1; --s)
                 {
-                    cmd.SetGlobalFloat(ShaderIDs._FurShellLayer, (float)s / kShellCount);
+                    float shellLayer = (float)s / kShellCount;
+                    
+                    cmd.SetGlobalFloat(ShaderIDs._FurShellLayer, shellLayer);
+                    cmd.SetGlobalVector(ShaderIDs._FurSystemParams, new Vector4( shellLayer, shellDelta, 0f, 0f));
                     RenderShellLayer(hdCamera, cmd, cull, context, ShaderPassNames._FurShellOpaqueName, HDUtils.k_RendererConfigurationBakedLighting);
                 }
             }
-
-            //TODO: Overcoats.
         }
 
         //TODO: GPU Instance Dithered Fur Shells to GBuffer.
