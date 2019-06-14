@@ -108,7 +108,7 @@ float SelfOcclusionTerm()
 
 float3 DiffuseColor(float2 uv)
 {
-    float3 diffuseColor = _BaseColor;
+    float3 diffuseColor = SAMPLE_TEXTURE2D(_BaseColorMap, sampler_BaseColorMap, uv);
     diffuseColor *= lerp(_RootColor, _TipColor, SHELL_LAYER);
     return diffuseColor;
 }

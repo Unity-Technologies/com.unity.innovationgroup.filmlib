@@ -60,11 +60,13 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         public Color specularTint;
         public Color secondarySpecularTint;
 
+        [Range(0f, 1f)] public float specularSmoothness;
         [Range(0f, 1f)] public float secondarySpecularSmoothness;
 
         [Range(0f, 1f)] public float scatterAmount;
         public Color scatterTint;
 
+        public Texture2D albedoMap;
         public Color rootColor;
         public Color tipColor; 
 
@@ -102,6 +104,10 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             public static readonly int _TransmissionTint            = Shader.PropertyToID("_TransmissionTint");
             public static readonly int _RootColor                   = Shader.PropertyToID("_RootColor");
             public static readonly int _TipColor                    = Shader.PropertyToID("_TipColor");
+
+            // HDRP Lit Input Overrides
+            public static readonly int _BaseColorMap                = Shader.PropertyToID("_BaseColorMap");
+            public static readonly int _Smoothness                  = Shader.PropertyToID("_Smoothness");
         }
 
         void SetMap(int shaderID, Texture map, Texture defaultMap)
@@ -140,10 +146,6 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                     SetMap(ShaderIDs._GroomHeightMap,  _.heightMap,  Texture2D.whiteTexture);
                     SetMap(ShaderIDs._GroomCombMap,    _.combMap,    Texture2D.blackTexture);
                     
-                    //if(_.densityMap    != null) _sheet.SetTexture(ShaderIDs._GroomDensityMap,       _.densityMap);
-                    //if(_.heightMap     != null) _sheet.SetTexture(ShaderIDs._GroomHeightMap,        _.heightMap);
-                    //if(_.combMap       != null) _sheet.SetTexture(ShaderIDs._GroomCombMap,          _.combMap);
-
                     // Param Inputs
                     _sheet.SetVector(ShaderIDs._GeometryParams, new Vector4((int)_.geometryMode, _.strandCurl, _.strandOffset, 0f)); // W: Unused 
                     _sheet.SetVector(ShaderIDs._AlphaParams,    new Vector4((int)_.alphaMode, _.alphaCutoff, _.alphaFeather, 1.0f - _.selfShadow)); // W: Self Shadow
@@ -156,6 +158,10 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                     _sheet.SetColor(ShaderIDs._TransmissionTint,            _.scatterTint);
                     _sheet.SetColor(ShaderIDs._RootColor,                   _.rootColor);
                     _sheet.SetColor(ShaderIDs._TipColor,                    _.tipColor);
+
+                    // HDRP Lit Overrides Inputs
+                    SetMap(ShaderIDs._BaseColorMap, _.albedoMap, Texture2D.whiteTexture);
+                    _sheet.SetFloat(ShaderIDs._Smoothness,                  _.specularSmoothness);
 
                 }
 

@@ -692,5 +692,5 @@ Shader "HDRP/Film/Fur"
         }
     }
 
-    CustomEditor "Experimental.Rendering.HDPipeline.LitGUI"
+    CustomEditor "FurNoMaterialGUI"
 }

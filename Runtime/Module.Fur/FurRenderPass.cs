@@ -12,7 +12,6 @@ This render pass plugs into those callbacks, injecting the fur shell passes.
 
 */
 
-
 namespace UnityEngine.Experimental.Rendering.HDPipeline
 {
     [ExecuteInEditMode]
@@ -26,7 +25,6 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         static class ShaderIDs
         {
             public static readonly int _FurSystemParams = Shader.PropertyToID("_FurSystemParams");
-            public static readonly int _FurShellLayer = Shader.PropertyToID("_FurShellLayer");
         }
 
         static class ShaderPassNames
@@ -45,7 +43,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 
             //TODO: Assemble list of fur renderers.
             //TODO: Warning check for HDRP asset.
-
+#if USING_MWU_HDRP
             // Hook into HDRP passes, inject a fur shell depth + opaque pass.
             hdCamera.afterDepthPrepass  += FurShellDepthPass;
             hdCamera.afterForwardOpaque += FurShellForwardOpaquePass;
@@ -61,6 +59,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                     hdSceneCamera.afterForwardOpaque += FurShellForwardOpaquePass; 
                 }
             }
+#endif
         }
 
         void OnDisable()
@@ -71,6 +70,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             var hdCamera = camera.GetComponent<HDAdditionalCameraData>();
             if(hdCamera == null) return;
 
+#if USING_MWU_HDRP
             hdCamera.afterDepthPrepass  -= FurShellDepthPass;
             hdCamera.afterForwardOpaque -= FurShellForwardOpaquePass;
 
@@ -85,6 +85,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                     hdSceneCamera.afterForwardOpaque -= FurShellForwardOpaquePass; 
                 }
             }
+#endif
         }
 
         void SetCoatLayerInputs(CommandBuffer cmd, FurCoatLayer layer)
@@ -105,7 +106,6 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 {
                     float shellLayer = (float)s / kShellCount;
 
-                    cmd.SetGlobalFloat(ShaderIDs._FurShellLayer, shellLayer);
                     cmd.SetGlobalVector(ShaderIDs._FurSystemParams, new Vector4( shellLayer, shellDelta, 0f, 0f));
                     RenderShellLayer(hdCamera, cmd, cull, context, ShaderPassNames._FurShellDepthName);
                 }
@@ -133,7 +133,6 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 {
                     float shellLayer = (float)s / kShellCount;
                     
-                    cmd.SetGlobalFloat(ShaderIDs._FurShellLayer, shellLayer);
                     cmd.SetGlobalVector(ShaderIDs._FurSystemParams, new Vector4( shellLayer, shellDelta, 0f, 0f));
                     RenderShellLayer(hdCamera, cmd, cull, context, ShaderPassNames._FurShellOpaqueName, HDUtils.k_RendererConfigurationBakedLighting);
                 }

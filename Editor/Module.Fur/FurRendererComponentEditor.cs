@@ -87,9 +87,11 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             SerializedProperty secondarySpecularShift      = serializedCoatLayer.FindPropertyRelative("secondarySpecularShift");
             SerializedProperty specularTint                = serializedCoatLayer.FindPropertyRelative("specularTint");
             SerializedProperty secondarySpecularTint       = serializedCoatLayer.FindPropertyRelative("secondarySpecularTint");
+            SerializedProperty specularSmoothness          = serializedCoatLayer.FindPropertyRelative("specularSmoothness");
             SerializedProperty secondarySpecularSmoothness = serializedCoatLayer.FindPropertyRelative("secondarySpecularSmoothness");
             SerializedProperty scatterAmount               = serializedCoatLayer.FindPropertyRelative("scatterAmount");
             SerializedProperty scatterTint                 = serializedCoatLayer.FindPropertyRelative("scatterTint");
+            SerializedProperty albedoMap                   = serializedCoatLayer.FindPropertyRelative("albedoMap");
             SerializedProperty rootColor                   = serializedCoatLayer.FindPropertyRelative("rootColor");
             SerializedProperty tipColor                    = serializedCoatLayer.FindPropertyRelative("tipColor");
             SerializedProperty selfShadow                  = serializedCoatLayer.FindPropertyRelative("selfShadow");
@@ -150,6 +152,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             EditorGUILayout.LabelField("Shading", EditorStyles.boldLabel);
             EditorGUI.indentLevel++;
             EditorGUILayout.LabelField("Lobe 1", EditorStyles.miniBoldLabel);
+            EditorGUILayout.PropertyField(specularSmoothness, new GUIContent("Smoothness"));
             EditorGUILayout.PropertyField(specularShift, new GUIContent("Shift"));
             EditorGUILayout.PropertyField(specularTint, new GUIContent("Tint"));
             EditorGUILayout.Space(); 
@@ -163,6 +166,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             EditorGUILayout.PropertyField(scatterTint, new GUIContent("Tint"));
             EditorGUILayout.Space(); 
             EditorGUILayout.LabelField("Albedo", EditorStyles.miniBoldLabel);
+            EditorGUILayout.PropertyField(albedoMap, new GUIContent("Map"));
             EditorGUILayout.PropertyField(rootColor, new GUIContent("Root"));
             EditorGUILayout.PropertyField(tipColor, new GUIContent("Tip"));
 
