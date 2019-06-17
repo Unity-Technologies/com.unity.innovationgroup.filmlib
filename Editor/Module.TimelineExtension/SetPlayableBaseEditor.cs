@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 
-namespace MWU.Timeline
+namespace MWU.FilmLib
 {
 
     public abstract class SetPlayableBaseEditor : EditorWindow

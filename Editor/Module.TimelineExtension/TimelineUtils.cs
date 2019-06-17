@@ -8,20 +8,37 @@ using UnityEngine.Timeline;
 using UnityEngine.Playables;
 using UnityEditor;
 
-namespace MWU.Timeline
+namespace MWU.FilmLib
 {
     public static class TimelineUtils
     {
         /// <summary>
-        /// Creation methods
+        /// Creates a Timeline asset at the given path. The path must exist in advance
         /// </summary>
-        public static TimelineAsset CreateUniqueTimelineAsset(string timelineAssetPath)
+        /// <param name="timelineAssetPath"></param>
+        /// <returns></returns>
+        public static TimelineAsset CreateTimelineAssetAtPath(string timelineAssetPath)
         {
             var timeline_asset = ScriptableObject.CreateInstance<TimelineAsset>();
             var uniquePlayableName = AssetDatabase.GenerateUniqueAssetPath(timelineAssetPath);
             AssetDatabase.CreateAsset(timeline_asset, uniquePlayableName);
 
             return timeline_asset;
+        }
+
+        /// <summary>
+        /// Generate a new Timeline asset with the given name in the 'Assets/Timeline' folder of the project
+        /// </summary>
+        /// <param name="timelineAssetName"></param>
+        /// <returns></returns>
+        public static TimelineAsset CreateTimelineAsset( string timelineAssetName)
+        {
+            if (!AssetDatabase.IsValidFolder("Assets/Timeline"))
+            {
+                AssetDatabase.CreateFolder("Assets", "Timeline");
+            }
+            var ta = ScriptableObjectUtility.CreateAssetType<TimelineAsset>("Assets/Timeline", timelineAssetName + ".asset");
+            return ta;
         }
 
         public static GameObject CreatePlayableDirectorObject(string name = null)
@@ -31,6 +48,7 @@ namespace MWU.Timeline
 
             return gameObj;
         }
+
         public static TimelineClip CreateAnimClipInTrack(string trackName, TimelineAsset timeline)
         {
             var track = timeline.CreateTrack<AnimationTrack>(null, trackName);
@@ -234,6 +252,7 @@ namespace MWU.Timeline
             var trackProp = clip.GetType().GetProperty("parentTrack", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
             return trackProp.GetValue(clip, null) as TrackAsset;
         }
+
         public static TimelineClip GetClip(System.Object obj)
         {
             var clipProp = obj.GetType().GetProperty("clip", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);

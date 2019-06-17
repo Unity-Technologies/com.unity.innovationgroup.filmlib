@@ -53,8 +53,8 @@ namespace MWU.FilmLib
         {
             var window = GetWindow<EditorToolbarMainView>(EditorToolbarLoc.MAINTOOLBAR_WINDOWNAME);
             window.Show();
-            window.maxSize = new Vector2(maxWindowSize.x, maxWindowSize.y);
-            window.minSize = new Vector2(minWindowSize.x, minWindowSize.y);
+            window.maxSize = maxWindowSize;
+            window.minSize = minWindowSize;
         }
 
         private void OnGUI()

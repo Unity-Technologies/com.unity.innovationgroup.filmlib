@@ -599,12 +599,8 @@ namespace MWU.FilmLib
                 case COMPONENT_TYPE.PLAYABLE_DIRECTOR:
                     {
                         var pd = go.GetOrAddComponent<PlayableDirector>();
-                        if( !AssetDatabase.IsValidFolder("Assets/Timeline"))
-                        {
-                            AssetDatabase.CreateFolder("Assets", "Timeline");
-                        }
-                        var ta = ScriptableObjectUtility.CreateAssetType<TimelineAsset>("Assets/Timeline", "MasterTimeline.asset");
-                        pd.playableAsset = ta;
+                        var ta = TimelineUtils.CreateTimelineAsset("MasterTimeline");
+                        TimelineUtils.SetPlayableAsset(go, ta);
                         break;
                     }
                 case COMPONENT_TYPE.POST_LAYER:

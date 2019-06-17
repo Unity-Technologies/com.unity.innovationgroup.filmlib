@@ -7,61 +7,66 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections;
 
-public class ReplaceSelection : ScriptableWizard
+namespace MWU.FilmLib
 {
-    static GameObject replacement = null;
-    static bool keep = false;
 
-    public GameObject ReplacementObject = null;
-    public bool KeepOriginals = false;
 
-    [MenuItem("Tools/Edit/Replace Selection...")]
-    static void CreateWizard()
+    public class ReplaceSelection : ScriptableWizard
     {
-        ScriptableWizard.DisplayWizard(
-            "Replace Selection", typeof(ReplaceSelection), "Replace");
-    }
+        static GameObject replacement = null;
+        static bool keep = false;
 
-    public ReplaceSelection()
-    {
-        ReplacementObject = replacement;
-        KeepOriginals = keep;
-    }
+        public GameObject ReplacementObject = null;
+        public bool KeepOriginals = false;
 
-    void OnWizardUpdate()
-    {
-        replacement = ReplacementObject;
-        keep = KeepOriginals;
-    }
-
-    void OnWizardCreate()
-    {
-        if (replacement == null)
-            return;
-
-        var transforms = Selection.GetTransforms(
-            SelectionMode.TopLevel | SelectionMode.OnlyUserModifiable);
-
-        Undo.RegisterCompleteObjectUndo(transforms, "Replace Selection");
-
-        foreach (Transform t in transforms)
+        [MenuItem("Tools/Edit/Replace Selection...")]
+        static void CreateWizard()
         {
-            var pref = PrefabUtility.GetPrefabAssetType(replacement);
-            var g = (GameObject)PrefabUtility.InstantiatePrefab(replacement);
-           
-            Transform gTransform = g.transform;
-            gTransform.parent = t.parent;
-            g.name = replacement.name;
-            gTransform.localPosition = t.localPosition;
-            gTransform.localScale = t.localScale;
-            gTransform.localRotation = t.localRotation;
+            ScriptableWizard.DisplayWizard(
+                "Replace Selection", typeof(ReplaceSelection), "Replace");
         }
 
-        if (!keep)
+        public ReplaceSelection()
         {
-            foreach (var g in Selection.gameObjects)
+            ReplacementObject = replacement;
+            KeepOriginals = keep;
+        }
+
+        void OnWizardUpdate()
+        {
+            replacement = ReplacementObject;
+            keep = KeepOriginals;
+        }
+
+        void OnWizardCreate()
+        {
+            if (replacement == null)
+                return;
+
+            var transforms = Selection.GetTransforms(
+                SelectionMode.TopLevel | SelectionMode.OnlyUserModifiable);
+
+            Undo.RegisterCompleteObjectUndo(transforms, "Replace Selection");
+
+            foreach (Transform t in transforms)
             {
-                GameObject.DestroyImmediate(g);
+                var pref = PrefabUtility.GetPrefabAssetType(replacement);
+                var g = (GameObject)PrefabUtility.InstantiatePrefab(replacement);
+
+                Transform gTransform = g.transform;
+                gTransform.parent = t.parent;
+                g.name = replacement.name;
+                gTransform.localPosition = t.localPosition;
+                gTransform.localScale = t.localScale;
+                gTransform.localRotation = t.localRotation;
+            }
+
+            if (!keep)
+            {
+                foreach (var g in Selection.gameObjects)
+                {
+                    GameObject.DestroyImmediate(g);
+                }
             }
         }
     }

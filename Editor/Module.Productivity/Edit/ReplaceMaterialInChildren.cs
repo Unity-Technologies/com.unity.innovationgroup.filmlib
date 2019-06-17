@@ -6,42 +6,47 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections;
 
-public class ReplaceMaterialInChildren : ScriptableWizard
+namespace MWU.FilmLib
 {
-    public Material newMaterial = null;
 
-    [MenuItem("Tools/Edit/Replace Materials in Children... %#_h")]
-    static void CreateWizard()
+
+    public class ReplaceMaterialInChildren : ScriptableWizard
     {
-        ScriptableWizard.DisplayWizard(
-            "Replace Materials in Children", typeof(ReplaceMaterialInChildren), "Replace");
-    }
+        public Material newMaterial = null;
 
-    public ReplaceMaterialInChildren()
-    {
-    }
-
-    void OnWizardUpdate()
-    {
-    }
-
-    void OnWizardCreate()
-    {
-        var transforms = Selection.GetTransforms(
-            SelectionMode.TopLevel | SelectionMode.OnlyUserModifiable);
-
-        Undo.RegisterCompleteObjectUndo(transforms, "Replace Materials in Selection");
-
-        foreach (Transform t in transforms)
+        [MenuItem("Tools/Edit/Replace Materials in Children... %#_h")]
+        static void CreateWizard()
         {
-            Debug.Log("Replacing all materials on object : " + t.name + " with " + newMaterial.name);
-            
-            var mrs = t.GetComponentsInChildren<MeshRenderer>();
-            if( mrs != null)
+            ScriptableWizard.DisplayWizard(
+                "Replace Materials in Children", typeof(ReplaceMaterialInChildren), "Replace");
+        }
+
+        public ReplaceMaterialInChildren()
+        {
+        }
+
+        void OnWizardUpdate()
+        {
+        }
+
+        void OnWizardCreate()
+        {
+            var transforms = Selection.GetTransforms(
+                SelectionMode.TopLevel | SelectionMode.OnlyUserModifiable);
+
+            Undo.RegisterCompleteObjectUndo(transforms, "Replace Materials in Selection");
+
+            foreach (Transform t in transforms)
             {
-                foreach( var mr in mrs)
+                Debug.Log("Replacing all materials on object : " + t.name + " with " + newMaterial.name);
+
+                var mrs = t.GetComponentsInChildren<MeshRenderer>();
+                if (mrs != null)
                 {
-                    mr.sharedMaterial = newMaterial;
+                    foreach (var mr in mrs)
+                    {
+                        mr.sharedMaterial = newMaterial;
+                    }
                 }
             }
         }

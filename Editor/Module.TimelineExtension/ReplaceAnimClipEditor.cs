@@ -1,15 +1,11 @@
-﻿using System.Collections;
+﻿using MWU.FilmLib;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEditor;
-using UnityEngine.Timeline;
 using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.Timeline;
 
-using MWU.Timeline;
-
-namespace MWU.Timeline
+namespace MWU.FilmLib
 {
 
     public class ReplaceAnimClipEditor : EditorWindow
