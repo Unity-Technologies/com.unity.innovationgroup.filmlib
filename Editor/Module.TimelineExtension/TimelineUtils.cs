@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Timeline;
 using UnityEngine.Playables;
 using UnityEditor;
+using UnityEditor.Timeline;
 
 namespace MWU.FilmLib
 {
@@ -37,7 +38,7 @@ namespace MWU.FilmLib
             {
                 AssetDatabase.CreateFolder("Assets", "Timeline");
             }
-            var ta = ScriptableObjectUtility.CreateAssetType<TimelineAsset>("Assets/Timeline", timelineAssetName + ".asset");
+            var ta = ScriptableObjectUtility.CreateAssetType<TimelineAsset>("Assets/Timeline", timelineAssetName);
             return ta;
         }
 
@@ -261,11 +262,7 @@ namespace MWU.FilmLib
 
         public static TimelineAsset GetCurrentActiveTimeline()
         {
-            var timeline_win = TimelineUtils.GetTimelineWindow();
-            var asset = timeline_win.GetType().GetProperty("timeline");
-            var timeline = asset.GetValue(timeline_win, null) as TimelineAsset;
-
-            return timeline;
+            return TimelineEditor.inspectedAsset;
         }
 
         public static void SetTimeline(TimelineAsset timeline, PlayableDirector director)
@@ -281,8 +278,6 @@ namespace MWU.FilmLib
 #endif
             Verify(retVal);
         }
-
-
 
         public static PlayableDirector GetDirectorFromTimeline(TimelineAsset timeline)
         {
