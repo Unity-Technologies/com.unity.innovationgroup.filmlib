@@ -5,7 +5,7 @@
   "unity": "2018.3",
   "description": "Unity Innovation Group Film Library",
   "dependencies": {
-    "com.unity.cinemachine": "2.2.9-preview.2",
+    "com.unity.cinemachine": "2.2.9",
     "com.unity.render-pipelines.core": "4.10.0-preview",
     "com.unity.render-pipelines.high-definition": "4.10.0-preview",
     "com.newtonsoft.json": "https://github.com/PixelWizards/com.newtonsoft.json.git"
