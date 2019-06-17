@@ -29,8 +29,8 @@ float GetHeight(float2 texcoord)
 {
     // NOTE: Currently we feed default maps (white) if none provided.
     // Shader keyword cannot be set via material
-    float heightSample = SAMPLE_TEXTURE2D_LOD(_GroomHeightMap, sampler_GroomHeightMap, texcoord, 2);
-    return (HEIGHT * heightSample) + MIN_HEIGHT;
+    float heightSample = SAMPLE_TEXTURE2D_LOD(_GroomHeightMap, sampler_GroomHeightMap, texcoord, 0);
+    return max( (HEIGHT * heightSample) + MIN_HEIGHT, 0.001 ); // NaN Guard
 }
 
 AttributesMesh ApplyMeshModification(AttributesMesh input)
@@ -69,7 +69,7 @@ AttributesMesh ApplyMeshModification(AttributesMesh input)
         positionWS = (P0 * pow(1 - U, 2.0)) + (P1 * pow(U, 2.0)) + (PC * 2 * U * (1 - U));
 
         // Adjust the blend function to compute for one shell up.
-        U = SHELL_LAYER + SHELL_DELTA; // TODO: Send delta.
+        U += SHELL_DELTA; // TODO: Send delta.
 
         float3 nextShellPositionWS = (P0 * pow(1 - U, 2.0)) + (P1 * pow(U, 2.0)) + (PC * 2 * U * (1 - U));
 
