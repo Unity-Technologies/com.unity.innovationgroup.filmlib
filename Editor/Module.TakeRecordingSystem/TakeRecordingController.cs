@@ -51,6 +51,7 @@ namespace MWU.FilmLib
             var go = TimelineUtils.CreatePlayableDirectorObject(thisName);
             var ta = TimelineUtils.CreateTimelineAsset(thisName);
             var pd = TimelineUtils.SetPlayableAsset(go, ta);
+            pd.playOnAwake = false;         // always no play on awake, master timeline will control this
             SetActiveTimeline ( pd);
 
             if( !isMaster)
