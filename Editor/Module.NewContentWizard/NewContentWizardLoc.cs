@@ -22,6 +22,11 @@ namespace MWU.FilmLib
     /// </summary>
     public static class NewContentWizardLoc
     {
+        /// <summary>
+        /// path to the icons / images for the wizard
+        /// </summary>
+        public const string CONTENTPATH = EditorUtilities.packagePathRoot + "/Runtime/Module.NewContentWizard/Content/";
+
         // menu entries
         public const string MENU_FILE_NEWSCENE = "File/New/Scene from Template";
         public const string MENU_FILE_NEWPROJECT = "File/New/Project from Template";

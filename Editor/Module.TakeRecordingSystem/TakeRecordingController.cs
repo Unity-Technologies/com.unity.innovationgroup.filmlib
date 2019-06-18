@@ -1,6 +1,7 @@
 ﻿using MWU.FilmLib.Extensions;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Playables;
@@ -16,6 +17,8 @@ namespace MWU.FilmLib
     public class TakeRecordingController
     {
         public static PlayableDirector activeTimeline;
+        public static List<string> timelineListLabel = new List<string>();
+        public static List<PlayableDirector> timelineList = new List<PlayableDirector>();
 
         /// <summary>
         /// retrieves which timeline is currently active in the timeline window
@@ -71,6 +74,15 @@ namespace MWU.FilmLib
                     {
                         break;
                     }
+            }
+        }
+
+        public static void RefreshTimelinesInScene()
+        {
+            timelineList = GameObject.FindObjectsOfType<PlayableDirector>().ToList();
+            foreach( var timeline in timelineList)
+            {
+                timelineListLabel.Add(timeline.name);
             }
         }
 

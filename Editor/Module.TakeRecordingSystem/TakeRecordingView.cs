@@ -32,8 +32,11 @@ namespace MWU.FilmLib
 
             GUILayout.BeginHorizontal();
             {
+                Control.RefreshTimelinesInScene();
+                
+
                 var timelineCreate = Loc.TIMELINE_CREATENEWMASTER;
-                if( activeTimeline != null)
+                if( Control.GetMasterTimeline() == null)
                 {
                     timelineCreate = Loc.TIMELINE_CREATENEWBEAT;
                 }
