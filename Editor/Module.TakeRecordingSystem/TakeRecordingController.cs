@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.SceneManagement;
 using UnityEngine.Timeline;
 
 namespace MWU.FilmLib
@@ -15,15 +17,45 @@ namespace MWU.FilmLib
         BEAT_TIMELINE
     }
 
-   
 
-    public class TakeRecordingController
+    public class TakeRecordingController : MonoBehaviour
     {
         public static PlayableDirector activeTimeline;
         public static List<string> timelineListLabel = new List<string>();
         public static List<PlayableDirector> timelineList = new List<PlayableDirector>();
-        public static int selectedTimeline = 0;
-        
+        public static int selectedTimelineIdx = 0;
+        public static int activeTimelineIdx = 0;
+
+        private void OnEnable()
+        {
+            EditorSceneManager.sceneOpened += SceneOpenedCallback;
+            Selection.selectionChanged += SelectionChangedCallback;
+        }
+        private void OnDisable()
+        {
+            EditorSceneManager.sceneOpened -= SceneOpenedCallback;
+            Selection.selectionChanged -= SelectionChangedCallback;
+        }
+
+        public static void SelectionChangedCallback()
+        {
+            // check if this is a timeline
+            var obj = Selection.activeObject as GameObject;
+            if (obj != null)
+            {
+                if (obj.GetComponent<PlayableDirector>() != null)
+                {
+                    GetActiveTimeline();
+                }
+            }
+        }
+
+        public static void SceneOpenedCallback(Scene newScene, OpenSceneMode _mode)
+        {
+            activeTimeline = null;
+            RefreshTimelinesInScene(true);
+        }
+
         /// <summary>
         /// retrieves which timeline is currently active in the timeline window
         /// </summary>
@@ -35,8 +67,20 @@ namespace MWU.FilmLib
             {
                 activeTimeline = TimelineUtils.GetDirectorFromTimeline(pdAsset);
             }
-
+            
             return activeTimeline;
+        }
+
+        public static int GetTimelineIdx(PlayableDirector timeline)
+        {
+            for (int i = 0; i < timelineList.Count; i++)
+            {
+                if (timelineList[i].name == activeTimeline.name)
+                {
+                    activeTimelineIdx = i;
+                }
+            }
+            return activeTimelineIdx;
         }
 
         /// <summary>
@@ -47,7 +91,6 @@ namespace MWU.FilmLib
         /// <returns></returns>
         public static GameObject CreateNewTimeline(string thisName, bool isMaster)
         {
-            Debug.Log("Creating new Timeline: " + thisName);
             var go = TimelineUtils.CreatePlayableDirectorObject(thisName);
             var ta = TimelineUtils.CreateTimelineAsset(thisName);
             var pd = TimelineUtils.SetPlayableAsset(go, ta);
@@ -100,6 +143,13 @@ namespace MWU.FilmLib
                         // fill in our beat track template
                         var ta = TimelineUtils.GetTimelineAssetFromDirector(pd);
                         var camera = TimelineUtils.CreateTimelineTrack(ta, TRACK_TYPE.TRACK_GROUP, "Camera", null);
+                        {
+                            var cmTrack = TimelineUtils.CreateTimelineTrack(ta, TRACK_TYPE.TRACK_CINEMACHINE, "CinemachineCamera", camera);
+                            var mainCam = Camera.main;
+                            var cmBrain = mainCam.GetComponent<Cinemachine.CinemachineBrain>();
+                            pd.SetGenericBinding(cmTrack, cmBrain);
+                            cmTrack.CreateDefaultClip();
+                        }
                         var anim = TimelineUtils.CreateTimelineTrack(ta, TRACK_TYPE.TRACK_GROUP, "Animation", null);
                         var lighting = TimelineUtils.CreateTimelineTrack(ta, TRACK_TYPE.TRACK_GROUP, "Lighting", null);
                         var vfx = TimelineUtils.CreateTimelineTrack(ta, TRACK_TYPE.TRACK_GROUP, "VFX", null);
@@ -127,6 +177,9 @@ namespace MWU.FilmLib
                     return;
             }
 
+            timelineList.Clear();
+            timelineListLabel.Clear();
+
             timelineList = GameObject.FindObjectsOfType<PlayableDirector>().ToList();
             foreach( var timeline in timelineList)
             {
@@ -145,8 +198,7 @@ namespace MWU.FilmLib
             {
                 if (timelineListLabel[i] == thisTimeline.name)
                 {
-                    Debug.Log("Found timeline match, selecting...");
-                    selectedTimeline = i;
+                    selectedTimelineIdx = i;
                     activeTimeline = thisTimeline;
                     return;
                 }

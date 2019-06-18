@@ -9,9 +9,10 @@ namespace MWU.FilmLib
     public static class TakeRecordingLoc
     {
         public const string WINDOW_TITLE = "Take System";
-        public const string WINDOW_MAINDESCRIPTION = "Multi-take recording system.";
+        public const string WINDOW_MAINDESCRIPTION = "Multi-take recording system. Create a new Timeline or select one from the list to configure.";
 
         // timeline management
+        public const string TIMELINE_CURRENTSELECTION = "Current active Timeline:";
         public const string TIMELINE_CREATENEWMASTER = "Create";
         public const string TIMELINE_CREATENEWBEAT = "Add";
         public const string TIMELINE_REFRESHTIMELINES = "Refresh";

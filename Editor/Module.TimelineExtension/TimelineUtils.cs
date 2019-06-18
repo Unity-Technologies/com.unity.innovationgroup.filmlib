@@ -17,6 +17,7 @@ namespace MWU.FilmLib
         TRACK_ANIMATION,
         TRACK_AUDIO,
         TRACK_CONTROL,
+        TRACK_CINEMACHINE,
     }
 
     public static class TimelineUtils
@@ -65,6 +66,10 @@ namespace MWU.FilmLib
                 case TRACK_TYPE.TRACK_CONTROL:
                     {
                         return timelineAsset.CreateTrack<ControlTrack>(parent, name);
+                    }
+                case TRACK_TYPE.TRACK_CINEMACHINE:
+                    {
+                        return timelineAsset.CreateTrack<Cinemachine.Timeline.CinemachineTrack>(parent, name);
                     }
             }
             return null;

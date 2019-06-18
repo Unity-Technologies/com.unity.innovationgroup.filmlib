@@ -26,64 +26,90 @@ namespace MWU.FilmLib
             window.minSize = minWindowSize;
         }
 
-        private void OnEnable()
-        {
-            EditorSceneManager.sceneOpened += SceneOpenedCallback;
-        }
-        private void OnDisable()
-        {
-            EditorSceneManager.sceneOpened -= SceneOpenedCallback;
-        }
-
-        public static void SceneOpenedCallback( Scene newScene, OpenSceneMode _mode)
-        {
-            Control.activeTimeline = null;
-            Control.RefreshTimelinesInScene(true);
-        }
-
         private void OnGUI()
         {
+            // top description
             GUILayout.Space(15f);
             GUILayout.Label(Loc.WINDOW_MAINDESCRIPTION, EditorStyles.helpBox);
-            GUILayout.Space(15f);
+            GUILayout.Space(5f);
 
+            GUILayout.BeginVertical();
+            {
+                GUILayout.Label(Loc.TIMELINE_CURRENTSELECTION);
+                Control.GetActiveTimeline();
+                
+                GUILayout.BeginHorizontal();
+                {
+                    var timelineName = "none";
+                    if (Control.activeTimeline != null)
+                    {
+                        timelineName = Control.activeTimeline.name;
+                    }
+                    GUILayout.Label(timelineName, EditorStyles.helpBox);
+
+                    var timelineCreate = Loc.TIMELINE_CREATENEWMASTER;
+
+                    if (Control.timelineList.Count > 0)
+                    {
+                        timelineCreate = Loc.TIMELINE_CREATENEWBEAT;
+                    }
+                    if (GUILayout.Button(timelineCreate))
+                    {
+                        GameObject go = null;
+                        var timelines = FindObjectsOfType<PlayableDirector>();
+                        // if we don't have any timelines in the scene yet
+                        if (timelines.Length < 1)
+                        {
+                            go = Control.CreateNewTimeline("MasterTimeline", true);
+                        }
+                        else
+                        {
+                            go = Control.CreateNewTimeline("Beat" + timelines.Length, false);
+                        }
+
+                        // select the new timeline so it becomes active in the Timeline window
+                        if (go != null)
+                        {
+                            Control.SetActiveSelection(go);
+                        }
+                    }
+
+                    if (GUILayout.Button(Loc.TIMELINE_REFRESHTIMELINES))
+                    {
+                        Control.RefreshTimelinesInScene(true);
+                    }
+                }
+                GUILayout.EndHorizontal();
+            }
+            GUILayout.EndVertical();
+            GUILayout.Space(5f);
+
+            // timeline management
             GUILayout.BeginHorizontal();
             {
-                var timelineCreate = Loc.TIMELINE_CREATENEWMASTER;
 
                 if (Control.timelineList.Count > 0)
                 {
-                    timelineCreate = Loc.TIMELINE_CREATENEWBEAT;
-
-                    Control.selectedTimeline = EditorGUILayout.Popup(Control.selectedTimeline, Control.timelineListLabel.ToArray(), GUILayout.MaxWidth(STANDARDBUTTONSIZE));
-                }
-
-                if (GUILayout.Button(timelineCreate))
-                {
-                    GameObject go = null;
-                    var timelines = FindObjectsOfType<PlayableDirector>();
-                    // if we don't have any timelines in the scene yet
-                    if (timelines.Length < 1)
+                    GUILayout.BeginHorizontal();
                     {
-                        go = Control.CreateNewTimeline("MasterTimeline", true);
+                        // dropdown of available timelines
+                        Control.selectedTimelineIdx = EditorGUILayout.Popup(Control.selectedTimelineIdx, Control.timelineListLabel.ToArray(), GUILayout.MaxWidth(STANDARDBUTTONSIZE));
+                        if (GUILayout.Button("Select"))
+                        {
+                            Selection.activeObject = Control.timelineList[Control.selectedTimelineIdx].gameObject;
+                        }
                     }
-                    else
-                    {
-                        go = Control.CreateNewTimeline("Beat" + timelines.Length, false);
-                    }
-
-                    // select the new timeline so it becomes active in the Timeline window
-                    if (go != null)
-                    {
-                        Control.SetActiveSelection(go);
-                    }
+                    GUILayout.EndHorizontal();
                 }
+            }
+            GUILayout.EndHorizontal();
+            GUILayout.Space(15f);
 
-                if (GUILayout.Button(Loc.TIMELINE_REFRESHTIMELINES))
-                {
-                    Control.RefreshTimelinesInScene(true);
-                }
-
+            // track management
+            GUILayout.BeginHorizontal();
+            {
+                // list all of the tracks in the currently selected timeline
+                
             }
             GUILayout.EndHorizontal();
         }
