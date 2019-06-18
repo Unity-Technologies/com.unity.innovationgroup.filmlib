@@ -7,7 +7,9 @@
         "Unity.Postprocessing.Runtime",
         "Unity.RenderPipelines.Core.Runtime",
         "Unity.Postprocessing.Editor",
-        "Unity.RenderPipelines.Core.Editor"
+        "Unity.RenderPipelines.Core.Editor",
+        "Unity.Film-TV.Toolbox",
+        "Unity.Film-TV.Toolbox.Editor"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [

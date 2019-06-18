@@ -11,6 +11,10 @@ using Core = MWU.FilmLib.NewContentWizardCore;
 using Settings = MWU.FilmLib.NewContentWizardSettings;
 using Loc = MWU.FilmLib.NewContentWizardLoc;                                   // string localization table
 using System;
+#if USING_HDRP
+using UnityEngine.Experimental.Rendering;
+using UnityEditor.Experimental.Rendering;
+#endif
 
 namespace MWU.FilmLib
 {

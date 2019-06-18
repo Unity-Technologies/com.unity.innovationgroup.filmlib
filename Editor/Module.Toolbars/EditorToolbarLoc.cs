@@ -22,6 +22,7 @@ namespace MWU.FilmLib
         public const string MAINTOOLBAR_EDIT_SEARCHPROJECT = "Search Project";
         public const string MAINTOOLBAR_EDIT_CREATEGROUP = "Create Group";
         public const string MAINTOOLBAR_EDIT_CENTERGROUPONCHILDREN = "Center Group";
+        public const string MAINTOOLBAR_EDIT_TOGGLEGIZMOS = "Toggle Gizmos";
 #if USING_FILMTOOLBOX
         public const string MAINTOOLBAR_EDIT_MATERIALREMAPPER = "Remap Materials";
 #endif

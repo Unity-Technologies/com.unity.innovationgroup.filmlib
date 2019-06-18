@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using MWU.FilmLib.Extensions;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -6,21 +7,26 @@ using UnityEngine.Playables;
 
 namespace MWU.FilmLib
 {
+    public enum TIMELINE_TEMPLATE
+    {
+        MASTER_TIMELINE,
+        BEAT_TIMELINE
+    }
+
     public class TakeRecordingController
     {
         public static PlayableDirector activeTimeline;
 
+        /// <summary>
+        /// retrieves which timeline is currently active in the timeline window
+        /// </summary>
+        /// <returns></returns>
         public static PlayableDirector GetActiveTimeline()
         {
-            if( activeTimeline != null)
+            var pdAsset = TimelineUtils.GetCurrentActiveTimeline();
+            if (pdAsset != null)
             {
-                var pdAsset = TimelineUtils.GetCurrentActiveTimeline();
-                if (pdAsset != null)
-                {
-                    Debug.Log("Current timeline asset: " + pdAsset.name);
-                    activeTimeline = TimelineUtils.GetDirectorFromTimeline(pdAsset);
-                    Debug.Log("Current timeline: " + activeTimeline.gameObject.name);
-                }
+                activeTimeline = TimelineUtils.GetDirectorFromTimeline(pdAsset);
             }
 
             return activeTimeline;
@@ -48,9 +54,43 @@ namespace MWU.FilmLib
             return go;
         }
 
+        /// <summary>
+        /// Autogenerate a track template for the timeline
+        /// </summary>
+        /// <param name="pd"></param>
+        /// <param name="type"></param>
+        public static void ApplyTimelineTemplae(PlayableDirector pd, TIMELINE_TEMPLATE type)
+        {
+            switch( type)
+            {
+                case TIMELINE_TEMPLATE.BEAT_TIMELINE:
+                    {
+                        break;
+                    }
+                case TIMELINE_TEMPLATE.MASTER_TIMELINE:
+                    {
+                        break;
+                    }
+            }
+        }
+
         public static void SetActiveSelection(GameObject go)
         {
             Selection.activeObject = go;
+        }
+
+        /// <summary>
+        /// Finds the gameobject named "MasterTimeline" and returns the playable director on it. Returns null if there isn't a master timeline yet
+        /// </summary>
+        /// <returns></returns>
+        public static PlayableDirector GetMasterTimeline()
+        {
+            var go = GameObject.Find("MasterTimeilne");
+            if( go == null)
+            {
+                return null;
+            }
+            return go.GetOrAddComponent<PlayableDirector>();
         }
     }
 }

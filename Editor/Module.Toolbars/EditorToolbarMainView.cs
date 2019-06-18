@@ -18,6 +18,7 @@ namespace MWU.FilmLib
         private static ToolbarConfig config;
         private static List<string> sceneNames = new List<string>();
         private static bool initialized = false;
+        private static bool gizmosState = true;
 
         private void OnEnable()
         {
@@ -150,6 +151,19 @@ namespace MWU.FilmLib
                                 if (GUILayout.Button(EditorToolbarLoc.MAINTOOLBAR_EDIT_CREATEGROUP, GUILayout.MaxWidth(defaultButtonSize.x), GUILayout.MaxHeight(defaultButtonSize.y)))
                                 {
                                     Shortcuts.CreateGroup();
+                                }
+                                if (GUILayout.Button(EditorToolbarLoc.MAINTOOLBAR_EDIT_TOGGLEGIZMOS, GUILayout.MaxWidth(defaultButtonSize.x), GUILayout.MaxHeight(defaultButtonSize.y)))
+                                {
+                                    if (gizmosState == true)
+                                    {
+                                        gizmosState = false;
+                                        Shortcuts.DisableAllGizmos();
+                                    }
+                                    else
+                                    {
+                                        gizmosState = true;
+                                        Shortcuts.EnableAllGizmos();
+                                    }
                                 }
                                 //if (GUILayout.Button(EditorToolbarLoc.MAINTOOLBAR_EDIT_CENTERGROUPONCHILDREN, GUILayout.MaxWidth(defaultButtonSize.x), GUILayout.MaxHeight(defaultButtonSize.y)))
                                 //{

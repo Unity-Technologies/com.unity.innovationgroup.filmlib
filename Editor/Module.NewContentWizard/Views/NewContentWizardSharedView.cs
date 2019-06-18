@@ -117,7 +117,7 @@ namespace MWU.FilmLib
                         if (bannerLogoNewContent == null)
                         {
                             bannerLogoNewContent = new Texture2D(32, 32);
-                            bannerLogoNewContent = AssetDatabase.LoadAssetAtPath<Texture2D>(EditorUtilities.packagePathRoot + "/Module.NewContentWizard/Content/White/Banner/NewContentWizard.png");
+                            bannerLogoNewContent = AssetDatabase.LoadAssetAtPath<Texture2D>(EditorUtilities.packagePathRoot + "/Runtime/Module.NewContentWizard/Content/White/Banner/NewContentWizard.png");
                         }
                         break;
                     }
@@ -126,7 +126,7 @@ namespace MWU.FilmLib
                         if( bannerLogoTemplateEditor == null)
                         {
                             bannerLogoTemplateEditor = new Texture2D(32, 32);
-                            bannerLogoTemplateEditor = AssetDatabase.LoadAssetAtPath<Texture2D>(EditorUtilities.packagePathRoot + "/Module.NewContentWizard/Content/White/Banner/TemplateEditor.png");
+                            bannerLogoTemplateEditor = AssetDatabase.LoadAssetAtPath<Texture2D>(EditorUtilities.packagePathRoot + "/Runtime/Module.NewContentWizard/Content/White/Banner/TemplateEditor.png");
                         }
                         break;
                     }
@@ -135,7 +135,7 @@ namespace MWU.FilmLib
             if(headerBG == null)
             {
                 headerBG = new GUIStyle();
-                var background = AssetDatabase.LoadAssetAtPath<Texture2D>(EditorUtilities.packagePathRoot + "/Module.NewContentWizard/Content/White/Banner/Background.png");
+                var background = AssetDatabase.LoadAssetAtPath<Texture2D>(EditorUtilities.packagePathRoot + "/Runtime/Module.NewContentWizard/Content/White/Banner/Background.png");
                 headerBG.normal.background = background;
             }
 
@@ -423,20 +423,20 @@ namespace MWU.FilmLib
         /// </summary>
         protected void LoadAssets()
         {
-            if (imgArrowLeft == null) {  imgArrowLeft = LoadAsset("/Module.NewContentWizard/Content/White/Icons/baseline_arrow_left_white_48dp.png"); assetLoadComplete = (imgArrowLeft != null) ? true : false;}
-            if (imgArrowRight == null) { imgArrowRight = LoadAsset("/Module.NewContentWizard/Content/White/Icons/baseline_arrow_right_white_48dp.png"); assetLoadComplete = (imgArrowRight != null) ? true : false; }
-            if (imgArrowUp == null) { imgArrowUp = LoadAsset("/Module.NewContentWizard/Content/White/Icons/baseline_arrow_drop_up_white_48dp.png"); assetLoadComplete = (imgArrowUp != null) ? true : false; }
-            if (imgArrowDown == null) { imgArrowDown = LoadAsset("/Module.NewContentWizard/Content/White/Icons/baseline_arrow_drop_down_white_48dp.png"); assetLoadComplete = (imgArrowDown != null) ? true : false; }
-            if (imgAdd == null) { imgAdd = LoadAsset("/Module.NewContentWizard/Content/White/Icons/baseline_add_white_48dp.png"); assetLoadComplete = (imgAdd != null) ? true : false; }
-            if (imgRemove == null) { imgRemove = LoadAsset("/Module.NewContentWizard/Content/White/Icons/baseline_remove_white_48dp.png"); assetLoadComplete = (imgRemove != null) ? true : false; }
-            if (imgRefresh == null) { imgRefresh = LoadAsset("/Module.NewContentWizard/Content/White/Icons/baseline_refresh_white_48dp.png"); assetLoadComplete = (imgRefresh != null) ? true : false; }
-            if (imgClear == null) { imgClear = LoadAsset("/Module.NewContentWizard/Content/White/Icons/baseline_clear_white_48dp.png"); assetLoadComplete = (imgClear != null) ? true : false; }
-            if (imgEdit == null) { imgEdit = LoadAsset("/Module.NewContentWizard/Content/White/Icons/baseline_edit_white_48dp.png"); assetLoadComplete = (imgEdit != null) ? true : false; }
-            if (imgDone == null) { imgDone = LoadAsset("/Module.NewContentWizard/Content/White/Icons/baseline_done_white_48dp.png"); assetLoadComplete = (imgDone != null) ? true : false; }
-            if (imgCreate == null) { imgCreate = LoadAsset("/Module.NewContentWizard/Content/White/Icons/baseline_create_white_48dp.png"); assetLoadComplete = (imgCreate != null) ? true : false; }
-            if (imgSettings == null) { imgSettings = LoadAsset("/Module.NewContentWizard/Content/White/Icons/baseline_settings_white_48dp.png"); assetLoadComplete = (imgSettings != null) ? true : false; }
-            if (imgSave == null) { imgSave = LoadAsset("/Module.NewContentWizard/Content/White/Icons/baseline_save_alt_white_48dp.png"); assetLoadComplete = (imgSave != null) ? true : false; }
-            if (imgCancel == null) { imgCancel = LoadAsset("/Module.NewContentWizard/Content/White/Icons/baseline_clear_white_48dp.png"); assetLoadComplete = (imgCancel != null) ? true : false; }
+            if (imgArrowLeft == null) {  imgArrowLeft = LoadAsset("/Runtime/Module.NewContentWizard/Content/White/Icons/baseline_arrow_left_white_48dp.png"); assetLoadComplete = (imgArrowLeft != null) ? true : false;}
+            if (imgArrowRight == null) { imgArrowRight = LoadAsset("/Runtime/Module.NewContentWizard/Content/White/Icons/baseline_arrow_right_white_48dp.png"); assetLoadComplete = (imgArrowRight != null) ? true : false; }
+            if (imgArrowUp == null) { imgArrowUp = LoadAsset("/Runtime/Module.NewContentWizard/Content/White/Icons/baseline_arrow_drop_up_white_48dp.png"); assetLoadComplete = (imgArrowUp != null) ? true : false; }
+            if (imgArrowDown == null) { imgArrowDown = LoadAsset("/Runtime/Module.NewContentWizard/Content/White/Icons/baseline_arrow_drop_down_white_48dp.png"); assetLoadComplete = (imgArrowDown != null) ? true : false; }
+            if (imgAdd == null) { imgAdd = LoadAsset("/Runtime/Module.NewContentWizard/Content/White/Icons/baseline_add_white_48dp.png"); assetLoadComplete = (imgAdd != null) ? true : false; }
+            if (imgRemove == null) { imgRemove = LoadAsset("/Runtime/Module.NewContentWizard/Content/White/Icons/baseline_remove_white_48dp.png"); assetLoadComplete = (imgRemove != null) ? true : false; }
+            if (imgRefresh == null) { imgRefresh = LoadAsset("/Runtime/Module.NewContentWizard/Content/White/Icons/baseline_refresh_white_48dp.png"); assetLoadComplete = (imgRefresh != null) ? true : false; }
+            if (imgClear == null) { imgClear = LoadAsset("/Runtime/Module.NewContentWizard/Content/White/Icons/baseline_clear_white_48dp.png"); assetLoadComplete = (imgClear != null) ? true : false; }
+            if (imgEdit == null) { imgEdit = LoadAsset("/Runtime/Module.NewContentWizard/Content/White/Icons/baseline_edit_white_48dp.png"); assetLoadComplete = (imgEdit != null) ? true : false; }
+            if (imgDone == null) { imgDone = LoadAsset("/Runtime/Module.NewContentWizard/Content/White/Icons/baseline_done_white_48dp.png"); assetLoadComplete = (imgDone != null) ? true : false; }
+            if (imgCreate == null) { imgCreate = LoadAsset("/Runtime/Module.NewContentWizard/Content/White/Icons/baseline_create_white_48dp.png"); assetLoadComplete = (imgCreate != null) ? true : false; }
+            if (imgSettings == null) { imgSettings = LoadAsset("/Runtime/Module.NewContentWizard/Content/White/Icons/baseline_settings_white_48dp.png"); assetLoadComplete = (imgSettings != null) ? true : false; }
+            if (imgSave == null) { imgSave = LoadAsset("/Runtime/Module.NewContentWizard/Content/White/Icons/baseline_save_alt_white_48dp.png"); assetLoadComplete = (imgSave != null) ? true : false; }
+            if (imgCancel == null) { imgCancel = LoadAsset("/Runtime/Module.NewContentWizard/Content/White/Icons/baseline_clear_white_48dp.png"); assetLoadComplete = (imgCancel != null) ? true : false; }
 
             if( !assetLoadComplete)
             {

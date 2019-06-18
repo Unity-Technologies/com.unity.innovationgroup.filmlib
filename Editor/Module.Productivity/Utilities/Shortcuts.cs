@@ -10,7 +10,6 @@ namespace MWU.Shared.Utilities
     [InitializeOnLoad]
     public class Shortcuts
     {
-
         // [MenuItem ("Edit/Deselect _d")]
         // static void DeselectAll () {
         // 	Selection.activeObject = null;
@@ -114,13 +113,13 @@ namespace MWU.Shared.Utilities
         }
 
         [MenuItem("Tools/Edit/Disable All Gizmos")]
-        static void DisableAllGizmosMenu()
+        public static void DisableAllGizmos()
         {
             ToggleGizmos(0);
         }
 
         [MenuItem("Tools/Edit/Enable All Gizmos")]
-        static void EnableAllGizmos()
+        public static void EnableAllGizmos()
         {
             ToggleGizmos(1);
         }
