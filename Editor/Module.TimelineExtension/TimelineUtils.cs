@@ -11,6 +11,14 @@ using UnityEditor.Timeline;
 
 namespace MWU.FilmLib
 {
+    public enum TRACK_TYPE
+    {
+        TRACK_GROUP,
+        TRACK_ANIMATION,
+        TRACK_AUDIO,
+        TRACK_CONTROL,
+    }
+
     public static class TimelineUtils
     {
         /// <summary>
@@ -42,6 +50,66 @@ namespace MWU.FilmLib
             return ta;
         }
 
+        public static TrackAsset CreateTimelineTrack(TimelineAsset timelineAsset, TRACK_TYPE type, string name, TrackAsset parent)
+        {
+            switch (type)
+            {
+                case TRACK_TYPE.TRACK_GROUP:
+                    {
+                        return timelineAsset.CreateTrack<GroupTrack>(parent, name);
+                    }
+                case TRACK_TYPE.TRACK_ANIMATION:
+                    {
+                        return timelineAsset.CreateTrack<AnimationTrack>(parent, name);
+                    }
+                case TRACK_TYPE.TRACK_CONTROL:
+                    {
+                        return timelineAsset.CreateTrack<ControlTrack>(parent, name);
+                    }
+            }
+            return null;
+        }
+
+        /// <summary>
+        ///  From a given timeline asset, see if we can find a track with the matching name
+        /// </summary>
+        /// <param name="timelineAsset"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static TrackAsset FindTrackByName( TimelineAsset timelineAsset, string name)
+        {
+            var trackList = timelineAsset.GetRootTracks();
+            var thisTrack = FindTrackByNameInternal(trackList, name);
+            if( thisTrack == null)
+            {
+                UnityEngine.Debug.Log("Could not find track in Timeline with name: " + name);
+            }
+            return thisTrack;
+        }
+
+        /// <summary>
+        /// Recursively try and find a track with the desired name
+        /// </summary>
+        /// <param name="trackList"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static TrackAsset FindTrackByNameInternal( IEnumerable<TrackAsset> trackList, string name)
+        {
+            foreach (var track in trackList)
+            {
+                if (track.name == name)
+                {
+                    return track;
+                }
+                else
+                {
+                    var childTracks = track.GetChildTracks();
+                    return FindTrackByNameInternal(childTracks, name);
+                }
+            }
+            return null;
+        }
+
         public static GameObject CreatePlayableDirectorObject(string name = null)
         {
             var gameObj = new GameObject(name);
@@ -53,6 +121,14 @@ namespace MWU.FilmLib
         public static TimelineClip CreateAnimClipInTrack(string trackName, TimelineAsset timeline)
         {
             var track = timeline.CreateTrack<AnimationTrack>(null, trackName);
+            var clip = track.CreateDefaultClip();
+
+            return clip;
+        }
+
+        public static TimelineClip CreateControlClipInTrack( string trackName, TimelineAsset timeline)
+        {
+            var track = timeline.CreateTrack<ControlTrack>(null, trackName);
             var clip = track.CreateDefaultClip();
 
             return clip;
@@ -285,6 +361,11 @@ namespace MWU.FilmLib
             var director = Array.Find(directors, d => d.playableAsset == timeline);
 
             return director;
+        }
+
+        public static TimelineAsset GetTimelineAssetFromDirector(PlayableDirector director)
+        {
+            return director.playableAsset as TimelineAsset;
         }
 
         public static void SetPlayheadByFrame(PlayableDirector director, float fps, double gotoFrame)

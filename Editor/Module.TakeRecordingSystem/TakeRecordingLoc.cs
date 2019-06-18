@@ -12,7 +12,13 @@ namespace MWU.FilmLib
         public const string WINDOW_MAINDESCRIPTION = "Multi-take recording system.";
 
         // timeline management
-        public const string TIMELINE_CREATENEWMASTER = "Create Master Timeline";
-        public const string TIMELINE_CREATENEWBEAT = "Add New Beat Timeline";
+        public const string TIMELINE_CREATENEWMASTER = "Create";
+        public const string TIMELINE_CREATENEWBEAT = "Add";
+        public const string TIMELINE_REFRESHTIMELINES = "Refresh";
+
+        // tooltips
+        public const string TOOLTIP_CREATENEWMASTER = "Create a new Master Timeline in the current scene";
+        public const string TOOLTIP_CREATENEWBEAT = "Create a new sub-timeline beat in the current scene";
+        public const string TOOLTIP_REFRESHTIMELINES = "Refresh timeline list";
     }
 }
