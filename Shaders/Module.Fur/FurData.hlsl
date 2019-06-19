@@ -144,7 +144,6 @@ void GetSurfaceAndBuiltinData(FragInputs input, float3 V, inout PositionInputs p
     #if 1
         // We smoothstep + dither to achieve soft falloffs.
         // Dither can be combined with a convergence engine (TAA, Super Sample, etc. for OIT)
-        // TODO: Alpha feather
         DitherTransparency(smoothstep(ALPHA_CUTOFF, min(ALPHA_CUTOFF + ALPHA_FEATHER, 1), alpha), posInput.positionSS);
     #else
         clip(step(ALPHA_CUTOFF, alpha) - 0.0001);
