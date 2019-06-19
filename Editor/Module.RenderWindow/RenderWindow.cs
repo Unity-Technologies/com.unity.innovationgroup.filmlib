@@ -69,6 +69,9 @@ public class RenderWindow : EditorWindow
         {
             if (GUILayout.Button("Converge", GUILayout.Height(STANDARDBUTTONHEIGHT)))
             {
+                // TODO
+
+                /*
                 //Recreate preview buffer on resolution change.
                 if (m_RenderCamera.pixelWidth != m_RenderView.width ||
                    m_RenderCamera.pixelHeight != m_RenderView.height)
@@ -106,6 +109,7 @@ public class RenderWindow : EditorWindow
                 
                 Graphics.ExecuteCommandBuffer(cmd);
                 cmd.Dispose();
+                */
             }
 
             if (GUILayout.Button("Save", GUILayout.Height(STANDARDBUTTONHEIGHT)))
