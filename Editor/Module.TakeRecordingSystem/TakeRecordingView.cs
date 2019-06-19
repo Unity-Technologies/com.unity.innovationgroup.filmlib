@@ -16,6 +16,8 @@ namespace MWU.FilmLib
 
         protected static float STANDARDBUTTONSIZE = 225f;
         protected static float STANDARDBUTTONHEIGHT = 35f;
+        protected static float SMALLBUTTONSIZE = 24f;
+        protected static float DEFAULT_TRACK_INDENT = 25f;
 
         [MenuItem("Tools/Take System")]
         private static void Init()
@@ -108,23 +110,25 @@ namespace MWU.FilmLib
             // track management
             GUILayout.BeginHorizontal();
             {
-                // list all of the tracks in the currently selected timeline
-                var tracks = Control.GetTracksInActiveTimeline();
-                
-                GUILayout.BeginVertical();
+                if( Control.GetActiveTimeline() != null)
                 {
-                    if( tracks.Count > 0)
-                    {
-                        var baseIndent = 0;
+                    // list all of the tracks in the currently selected timeline
+                    var tracks = Control.GetTracksInActiveTimeline();
 
-                        foreach (var track in tracks)
+                    GUILayout.BeginVertical();
+                    {
+                        if (tracks.Count > 0)
                         {
-                            DrawTrackEntry(track, baseIndent);
+                            var baseIndent = 0;
+
+                            foreach (var track in tracks)
+                            {
+                                DrawTrackEntry(track, baseIndent);
+                            }
                         }
                     }
+                    GUILayout.EndVertical();
                 }
-                GUILayout.EndVertical();
-                
             }
             GUILayout.EndHorizontal();
         }
@@ -137,12 +141,14 @@ namespace MWU.FilmLib
             GUILayout.BeginHorizontal();
             {
                 GUILayout.Space(indent);
-                GUILayout.Label(type.ToString() + ": " + track.name);
+                var icon = Control.GetIconForType(type);
+                GUILayout.Button(icon, GUILayout.Width(SMALLBUTTONSIZE), GUILayout.Height(SMALLBUTTONSIZE));
+                GUILayout.Label( track.name);
             }
             GUILayout.EndHorizontal();
 
             var childTracks = track.GetChildTracks();
-            var baseIndent = indent + 10f;
+            var baseIndent = indent + DEFAULT_TRACK_INDENT;
 
             foreach (var child in childTracks)
             {

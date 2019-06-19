@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.SceneManagement;
 using UnityEngine.Timeline;
+using Loc = MWU.FilmLib.TakeRecordingLoc;
 
 namespace MWU.FilmLib
 {
@@ -239,6 +240,51 @@ namespace MWU.FilmLib
                 return null;
             }
             return go.GetOrAddComponent<PlayableDirector>();
+        }
+
+        public static GUIContent GetIconForType(TRACK_TYPE type)
+        {
+            var icon = new GUIContent();
+            switch( type)
+            {
+                case TRACK_TYPE.TRACK_ANIMATION:
+                    {
+                        icon = new GUIContent(EditorIcons.GetIcon("AnimationTrack"), Loc.TOOLTIP_ANIMATIONTRACK);
+                        break;
+                    }
+                case TRACK_TYPE.TRACK_AUDIO:
+                    {
+                        icon = new GUIContent(EditorIcons.GetIcon("AudioTrack"), Loc.TOOLTIP_AUDIOTRACK);
+                        break;
+                    }
+                case TRACK_TYPE.TRACK_CINEMACHINE:
+                    {
+                        icon = new GUIContent(EditorIcons.GetIcon("CinemachineTrack"), Loc.TOOLTIP_CINEMACHINETRACK);
+                        break;
+                    }
+                case TRACK_TYPE.TRACK_CONTROL:
+                    {
+                        icon = new GUIContent(EditorIcons.GetIcon("ControlTrack"), Loc.TOOLTIP_CONTROlTRACK);
+                        break;
+                    }
+                case TRACK_TYPE.TRACK_GROUP:
+                    {
+                        icon = new GUIContent(EditorIcons.GetIcon("GroupTrack"), Loc.TOOLTIP_GROUPTRACK);
+                        break;
+                    }
+                case TRACK_TYPE.TRACK_ACTIVATION:
+                    {
+                        icon = new GUIContent(EditorIcons.GetIcon("ActivationTrack"), Loc.TOOLTIP_ACTIVATIONTRACK);
+                        break;
+                    }
+                case TRACK_TYPE.TRACK_UNKNOWN:
+                    {
+                        icon = new GUIContent(EditorIcons.GetIcon("Unknown"), Loc.TOOLTIP_UNKNOWNTRACK);
+                        break;
+                    }
+            }
+
+            return icon;
         }
     }
 }

@@ -18,7 +18,7 @@ namespace MWU.FilmLib
         private static bool assetLoadComplete = false;
         protected static Dictionary<string, Texture2D> icons = new Dictionary<string, Texture2D>();
 
-        public static Texture2D GetIcon(string name)
+        public static Texture GetIcon(string name)
         {
             if (!assetLoadComplete)
                 LoadAssets();
@@ -35,6 +35,7 @@ namespace MWU.FilmLib
         /// </summary>
         protected static void LoadAssets()
         {
+            icons.Clear();
             icons = new Dictionary<string, Texture2D>()
             {
                 {  "ArrowLeft", LoadAsset("White/Icons/arrow_left.png") },
@@ -48,7 +49,14 @@ namespace MWU.FilmLib
                 {  "Create", LoadAsset("White/Icons/create.png") },
                 {  "Settings", LoadAsset("White/Icons/settings.png") },
                 {  "Save", LoadAsset("White/Icons/save_alt.png") },
-                {  "Clear", LoadAsset("White/Icons/clear.png") },
+                {  "AnimationTrack", LoadAsset("White/Icons/play_arrow.png") },
+                {  "AudioTrack", LoadAsset("White/Icons/audiotrack.png") },
+                {  "CinemachineTrack", LoadAsset("White/Icons/local_see.png") },
+                {  "ControlTrack", LoadAsset("White/Icons/subdirectory_arrow_right.png") },
+                {  "GroupTrack", LoadAsset("White/Icons/folder.png") },
+                {  "ActivationTrack", LoadAsset("White/Icons/fiber_manual_record.png") },
+                {  "Unknown", LoadAsset("White/Icons/warning.png") },
+
             };
             assetLoadComplete = true;
         }

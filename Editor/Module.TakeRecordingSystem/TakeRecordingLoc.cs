@@ -21,5 +21,15 @@ namespace MWU.FilmLib
         public const string TOOLTIP_CREATENEWMASTER = "Create a new Master Timeline in the current scene";
         public const string TOOLTIP_CREATENEWBEAT = "Create a new sub-timeline beat in the current scene";
         public const string TOOLTIP_REFRESHTIMELINES = "Refresh timeline list";
+
+        // track tooltips
+        public const string TOOLTIP_GROUPTRACK = "Group Track";
+        public const string TOOLTIP_ANIMATIONTRACK = "Animation Track";
+        public const string TOOLTIP_AUDIOTRACK = "Audio Track";
+        public const string TOOLTIP_CONTROlTRACK = "Control Track";
+        public const string TOOLTIP_CINEMACHINETRACK = "Cinemachine Track";
+        public const string TOOLTIP_ACTIVATIONTRACK = "Activation Track";
+        public const string TOOLTIP_UNKNOWNTRACK = "Custom / Unknown Track";
+
     }
 }
