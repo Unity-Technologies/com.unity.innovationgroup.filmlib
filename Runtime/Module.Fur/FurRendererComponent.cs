@@ -84,6 +84,18 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
         // TODO: Move to FurSystem
         MaterialPropertyBlock _sheet;
 
+        // Shader input arrays
+        private Vector4[] geometryParams;
+        private Vector4[] alphaParams;
+        private Vector4[] groomParams;
+        private Vector4[] shadingParams;
+
+        private Color[] specularTints;
+        private Color[] secondarySpecularTints;
+        private Color[] scatterTints;
+        private Color[] rootColors;
+        private Color[] tipColors;
+
         static class ShaderIDs
         {
             // Map Inputs
@@ -122,6 +134,26 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             }
         }
 
+        Vector4 GetLayerGeometryParams(FurCoatLayer layer)
+        {
+            return new Vector4((int)layer.geometryMode, layer.strandCurl, layer.strandOffset, 0f);
+        }
+
+        Vector4 GetLayerAlphaParams(FurCoatLayer layer)
+        {
+            return new Vector4((int)layer.alphaMode, layer.alphaCutoff, layer.alphaFeather, 1.0f - layer.selfShadow);
+        }
+
+        Vector4 GetLayerGroomParams(FurCoatLayer layer)
+        {
+            return new Vector4(layer.density, layer.height, layer.minimumHeight, layer.combStrength);
+        }
+
+        Vector4 GetLayerShadingParams(FurCoatLayer layer)
+        {
+            return new Vector4(layer.specularShift, layer.secondarySpecularShift, layer.secondarySpecularSmoothness, layer.scatterAmount);
+        }
+
         void LateUpdate()
         {
             if (_renderers  == null || _renderers.Length  == 0) return;
@@ -134,36 +166,33 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 if (renderer == null || renderer.sharedMaterials.Length == 0) continue;
                 renderer.GetPropertyBlock(_sheet);
 
-                // TODO: For now, we render 0th layer until move to FurSystem
-                for(int i = 0; i < 1; ++i)
-                {
-                    FurCoatLayer _ = _coatLayers[i];
-                    
-                    // Map inputs
-                    // Can't enable shader keyword from material prop block, so we fall back to default map type if none assigned
-                    if(_.distanceField != null) _sheet.SetTexture(ShaderIDs._GeometryDistanceField, _.distanceField);
-                    SetMap(ShaderIDs._GroomDensityMap, _.densityMap, Texture2D.whiteTexture);
-                    SetMap(ShaderIDs._GroomHeightMap,  _.heightMap,  Texture2D.whiteTexture);
-                    SetMap(ShaderIDs._GroomCombMap,    _.combMap,    Texture2D.blackTexture);
-                    
-                    // Param Inputs
-                    _sheet.SetVector(ShaderIDs._GeometryParams, new Vector4((int)_.geometryMode, _.strandCurl, _.strandOffset, 0f)); // W: Unused 
-                    _sheet.SetVector(ShaderIDs._AlphaParams,    new Vector4((int)_.alphaMode, _.alphaCutoff, _.alphaFeather, 1.0f - _.selfShadow)); // W: Self Shadow
-                    _sheet.SetVector(ShaderIDs._GroomParams,    new Vector4(_.density, _.height, _.minimumHeight, _.combStrength));
-                    _sheet.SetVector(ShaderIDs._ShadingParams,  new Vector4(_.specularShift, _.secondarySpecularShift, _.secondarySpecularSmoothness, _.scatterAmount));
+                // TODO: For now, we render 0th and 1st layer until move to FurSystem
+                FurCoatLayer u = _coatLayers[0];
+                FurCoatLayer o = _coatLayers[1];
+                
+                // Map inputs
+                // Can't enable shader keyword from material prop block, so we fall back to default map type if none assigned
+                if(u.distanceField != null) _sheet.SetTexture(ShaderIDs._GeometryDistanceField, u.distanceField);
+                SetMap(ShaderIDs._GroomDensityMap, u.densityMap, Texture2D.whiteTexture);
+                SetMap(ShaderIDs._GroomHeightMap,  u.heightMap,  Texture2D.whiteTexture);
+                SetMap(ShaderIDs._GroomCombMap,    u.combMap,    Texture2D.blackTexture);
+                
+                // Param Inputs
+                _sheet.SetVectorArray(ShaderIDs._GeometryParams, new Vector4[2] { GetLayerGeometryParams(u), GetLayerGeometryParams(o) });
+                _sheet.SetVectorArray(ShaderIDs._AlphaParams,    new Vector4[2] { GetLayerAlphaParams(u),    GetLayerAlphaParams(o)    });
+                _sheet.SetVectorArray(ShaderIDs._GroomParams,    new Vector4[2] { GetLayerGroomParams(u),    GetLayerGroomParams(o)    });
+                _sheet.SetVectorArray(ShaderIDs._ShadingParams,  new Vector4[2] { GetLayerShadingParams(u),  GetLayerShadingParams(o)  });
 
-                    // Color Inputs
-                    _sheet.SetColor(ShaderIDs._SpecularTint,                _.specularTint);
-                    _sheet.SetColor(ShaderIDs._SecondarySpecularTint,       _.secondarySpecularTint);
-                    _sheet.SetColor(ShaderIDs._TransmissionTint,            _.scatterTint);
-                    _sheet.SetColor(ShaderIDs._RootColor,                   _.rootColor);
-                    _sheet.SetColor(ShaderIDs._TipColor,                    _.tipColor);
+                // Color Inputs
+                _sheet.SetVectorArray(ShaderIDs._SpecularTint,                new Vector4[2] { u.specularTint,          o.specularTint          });
+                _sheet.SetVectorArray(ShaderIDs._SecondarySpecularTint,       new Vector4[2] { u.secondarySpecularTint, o.secondarySpecularTint });
+                _sheet.SetVectorArray(ShaderIDs._TransmissionTint,            new Vector4[2] { u.scatterTint,           o.scatterTint           });
+                _sheet.SetVectorArray(ShaderIDs._RootColor,                   new Vector4[2] { u.rootColor,             o.rootColor             });
+                _sheet.SetVectorArray(ShaderIDs._TipColor,                    new Vector4[2] { u.tipColor,              o.tipColor              });
 
-                    // HDRP Lit Overrides Inputs
-                    SetMap(ShaderIDs._BaseColorMap, _.albedoMap, Texture2D.whiteTexture);
-                    _sheet.SetFloat(ShaderIDs._Smoothness,                  _.specularSmoothness);
-
-                }
+                // HDRP Lit Overrides Inputs
+                SetMap(ShaderIDs._BaseColorMap, u.albedoMap, Texture2D.whiteTexture);
+                _sheet.SetFloat(ShaderIDs._Smoothness,                  u.specularSmoothness);
 
                 renderer.SetPropertyBlock(_sheet);
             }

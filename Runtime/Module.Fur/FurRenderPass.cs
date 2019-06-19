@@ -99,14 +99,18 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             {
                 float shellDelta = 1f / (float)m_ShellCount;
 
-                // TODO: Per-renderer shell count.
-                // NOTE: Currently skip 0th shell due to zfight issue. Bandaid fix.
-                for (int s = m_ShellCount; s >= 1; --s)
+                // NOTE: Until Fur System, we go over coat layers here with a fixed cap.
+                for (int c = 0; c < 2; ++c)
                 {
-                    float shellLayer = (float)s / m_ShellCount;
+                    // TODO: Per-renderer shell count.
+                    // NOTE: Currently skip 0th shell due to zfight issue. Bandaid fix.
+                    for (int s = m_ShellCount; s >= 1; --s)
+                    {
+                        float shellLayer = (float)s / m_ShellCount;
 
-                    cmd.SetGlobalVector(ShaderIDs._FurSystemParams, new Vector4( shellLayer, shellDelta, 0f, 0f));
-                    RenderShellLayer(hdCamera, cmd, cull, context, ShaderPassNames._FurShellDepthName);
+                        cmd.SetGlobalVector(ShaderIDs._FurSystemParams, new Vector4( shellLayer, shellDelta, c, 0f));
+                        RenderShellLayer(hdCamera, cmd, cull, context, ShaderPassNames._FurShellDepthName);
+                    }
                 }
             }
         }
@@ -118,14 +122,18 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
             {
                 float shellDelta = 1f / (float)m_ShellCount;
 
-                // TODO: Per-renderer shell count.
-                // NOTE: Currently skip 0th shell due to zfight issue. Bandaid fix.
-                for (int s = m_ShellCount; s >= 1; --s)
+                // NOTE: Until Fur System, we go over coat layers here with a fixed cap.
+                for(int c = 0; c < 2; c++)
                 {
-                    float shellLayer = (float)s / m_ShellCount;
-                    
-                    cmd.SetGlobalVector(ShaderIDs._FurSystemParams, new Vector4( shellLayer, shellDelta, 0f, 0f));
-                    RenderShellLayer(hdCamera, cmd, cull, context, ShaderPassNames._FurShellOpaqueName, HDUtils.k_RendererConfigurationBakedLighting);
+                    // TODO: Per-renderer shell count.
+                    // NOTE: Currently skip 0th shell due to zfight issue. Bandaid fix.
+                    for (int s = m_ShellCount; s >= 1; --s)
+                    {
+                        float shellLayer = (float)s / m_ShellCount;
+                        
+                        cmd.SetGlobalVector(ShaderIDs._FurSystemParams, new Vector4( shellLayer, shellDelta, c, 0f));
+                        RenderShellLayer(hdCamera, cmd, cull, context, ShaderPassNames._FurShellOpaqueName, HDUtils.k_RendererConfigurationBakedLighting);
+                    }
                 }
             }
         }

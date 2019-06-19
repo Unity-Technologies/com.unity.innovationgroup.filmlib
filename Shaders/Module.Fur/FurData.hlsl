@@ -109,7 +109,7 @@ float SelfOcclusionTerm()
 float3 DiffuseColor(float2 uv)
 {
     float3 diffuseColor = SAMPLE_TEXTURE2D(_BaseColorMap, sampler_BaseColorMap, uv);
-    diffuseColor *= lerp(_RootColor, _TipColor, SHELL_LAYER);
+    diffuseColor *= lerp(ROOT_COLOR, TIP_COLOR, SHELL_LAYER);
     return diffuseColor;
 }
 
@@ -162,13 +162,13 @@ void GetSurfaceAndBuiltinData(FragInputs input, float3 V, inout PositionInputs p
     surfaceData.diffuseColor                  = DiffuseColor(texcoord); 
     surfaceData.normalWS                      = N;
     surfaceData.geomNormalWS                  = input.worldToTangent[2];
-    surfaceData.transmittance                 = _TransmissionTint;
+    surfaceData.transmittance                 = TRANSMISSION_TINT;
     surfaceData.rimTransmissionIntensity      = TRANSMISSION_INTENSITY;
     surfaceData.hairStrandDirectionWS         = T; 
     surfaceData.perceptualSmoothness          = _Smoothness;
     surfaceData.secondaryPerceptualSmoothness = SPECULAR_SMOOTHNESS_1;
-    surfaceData.specularTint                  = _SpecularTint;
-    surfaceData.secondarySpecularTint         = _SecondarySpecularTint;
+    surfaceData.specularTint                  = SPECULAR_TINT;
+    surfaceData.secondarySpecularTint         = SPECULAR_TINT_2;
     surfaceData.specularShift                 = SPECULAR_SHIFT_0;
     surfaceData.secondarySpecularShift        = SPECULAR_SHIFT_1;
     surfaceData.ambientOcclusion              = SelfOcclusionTerm(); 
