@@ -87,7 +87,6 @@ namespace MWU.FilmLib
             // timeline management
             GUILayout.BeginHorizontal();
             {
-
                 if (Control.timelineList.Count > 0)
                 {
                     GUILayout.BeginHorizontal();
@@ -109,6 +108,20 @@ namespace MWU.FilmLib
             GUILayout.BeginHorizontal();
             {
                 // list all of the tracks in the currently selected timeline
+                var tracks = Control.GetTracksInActiveTimeline();
+                
+                GUILayout.BeginVertical();
+                {
+                    if( tracks.Count > 0)
+                    {
+                        foreach (var track in tracks)
+                        {
+                            // figure out what type of track this is:
+                            var type = TimelineUtils.GetTrackType(track);
+                            GUILayout.Label("Track: " + track.name);
+                        }
+                    }
+                }
                 
             }
             GUILayout.EndHorizontal();

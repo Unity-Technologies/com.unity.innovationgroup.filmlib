@@ -293,6 +293,19 @@ namespace MWU.FilmLib
         }
 
         /// <summary>
+        /// pass in a track and we'll try and figure out what type it is
+        /// currently only supports TRACK_TYPE tracks, although you can 
+        /// extend it to support other custom tracks easily enough
+        /// </summary>
+        /// <param name="track"></param>
+        /// <returns></returns>
+        public static TRACK_TYPE GetTrackType( TrackAsset track)
+        {
+            // TODO
+            return TRACK_TYPE.TRACK_ANIMATION;
+        }
+
+        /// <summary>
         /// All manipulation through reflection
         /// Highly prompt to changes, use at risk
         /// </summary>
@@ -370,6 +383,8 @@ namespace MWU.FilmLib
 
         public static TimelineAsset GetTimelineAssetFromDirector(PlayableDirector director)
         {
+            if (director == null)
+                return null;
             return director.playableAsset as TimelineAsset;
         }
 

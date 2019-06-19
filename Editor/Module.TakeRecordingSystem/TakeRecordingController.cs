@@ -165,6 +165,18 @@ namespace MWU.FilmLib
             }
         }
 
+        public static List<TrackAsset> GetTracksInActiveTimeline()
+        {
+            var active = GetActiveTimeline();
+            var ta = TimelineUtils.GetTimelineAssetFromDirector(active);
+            if( ta != null)
+            {
+                var tracks = ta.GetRootTracks();
+                return tracks.ToList();
+            }
+            return new List<TrackAsset>();
+        }
+
         /// <summary>
         /// Scan the open scenes for any playable directors. Returns cache unless you force refresh
         /// </summary>
