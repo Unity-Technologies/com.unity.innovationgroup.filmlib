@@ -123,7 +123,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
                 float shellDelta = 1f / (float)m_ShellCount;
 
                 // NOTE: Until Fur System, we go over coat layers here with a fixed cap.
-                for(int c = 0; c < 2; c++)
+                for(int c = 0; c < 2; ++c)
                 {
                     // TODO: Per-renderer shell count.
                     // NOTE: Currently skip 0th shell due to zfight issue. Bandaid fix.
