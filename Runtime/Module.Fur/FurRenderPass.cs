@@ -19,8 +19,12 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
     public sealed class FurRenderPass : MonoBehaviour
     {
         // Currently shell count is internally set, in the future, this needs to be converted to per-renderer setting
-        // TODO: Temporarily add to UI
-        const int kShellCount = 32;
+        private int m_ShellCount = 32;
+        public int ShellCount 
+        {
+            get { return m_ShellCount;  }
+            set { m_ShellCount = value; }
+        }
 
         static class ShaderIDs
         {
@@ -88,50 +92,37 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
 #endif
         }
 
-        void SetCoatLayerInputs(CommandBuffer cmd, FurCoatLayer layer)
-        {
-            // TODO
-        }
-
         void FurShellDepthPass(ScriptableRenderContext context, HDCamera hdCamera, CullResults cull, CommandBuffer cmd,
                                RTHandleSystem.RTHandle depthStencil)
         {
-            using (new ProfilingSample(cmd, "Fur (Depth) (Under Coats)"))
+            using (new ProfilingSample(cmd, "Fur Shell Pass (Depth)"))
             {
-                float shellDelta = 1f / (float)kShellCount;
+                float shellDelta = 1f / (float)m_ShellCount;
 
                 // TODO: Per-renderer shell count.
                 // NOTE: Currently skip 0th shell due to zfight issue. Bandaid fix.
-                for (int s = kShellCount; s >= 1; --s)
+                for (int s = m_ShellCount; s >= 1; --s)
                 {
-                    float shellLayer = (float)s / kShellCount;
+                    float shellLayer = (float)s / m_ShellCount;
 
                     cmd.SetGlobalVector(ShaderIDs._FurSystemParams, new Vector4( shellLayer, shellDelta, 0f, 0f));
                     RenderShellLayer(hdCamera, cmd, cull, context, ShaderPassNames._FurShellDepthName);
                 }
             }
         }
-        
-        void FurShellDepthPassInstanced(ScriptableRenderContext context, HDCamera hdCamera, CullResults cull, CommandBuffer cmd,
-                                        RTHandleSystem.RTHandle depthStencil)
-        {
-            using (new ProfilingSample(cmd, "Fur (Depth) (Instanced)"))
-            {
-            }
-        }
 
         void FurShellForwardOpaquePass(ScriptableRenderContext context, HDCamera hdCamera, CullResults cull, CommandBuffer cmd,
                                        RTHandleSystem.RTHandle colorBuffer, RTHandleSystem.RTHandle depthStencil)
         {
-            using (new ProfilingSample(cmd, "Fur (Opaque) (Under Coats)"))
+            using (new ProfilingSample(cmd, "Fur Shell Pass (Opaque)"))
             {
-                float shellDelta = 1f / (float)kShellCount;
+                float shellDelta = 1f / (float)m_ShellCount;
 
                 // TODO: Per-renderer shell count.
                 // NOTE: Currently skip 0th shell due to zfight issue. Bandaid fix.
-                for (int s = kShellCount; s >= 1; --s)
+                for (int s = m_ShellCount; s >= 1; --s)
                 {
-                    float shellLayer = (float)s / kShellCount;
+                    float shellLayer = (float)s / m_ShellCount;
                     
                     cmd.SetGlobalVector(ShaderIDs._FurSystemParams, new Vector4( shellLayer, shellDelta, 0f, 0f));
                     RenderShellLayer(hdCamera, cmd, cull, context, ShaderPassNames._FurShellOpaqueName, HDUtils.k_RendererConfigurationBakedLighting);

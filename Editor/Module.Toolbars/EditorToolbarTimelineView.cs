@@ -129,7 +129,7 @@ namespace MWU.FilmLib
                             GUI.backgroundColor = colOverrides;
                             GUILayout.BeginHorizontal();
                             {
-#if HDRP_FUR
+#if USING_MWU_HDRP
                              GUILayout.BeginVertical();
                                 GUILayout.Label(EditorToolbarLoc.TIMELINETOOLBAR_FURSHELLCOUNT);
                                 RenderSettings.furShellCount = (int) EditorGUILayout.Slider(RenderSettings.furShellCount, RenderSettings.furMinCount, RenderSettings.furMaxCount, GUILayout.MinWidth( 100f));
