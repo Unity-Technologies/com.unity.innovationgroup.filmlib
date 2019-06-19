@@ -3,6 +3,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.SceneManagement;
+using UnityEngine.Timeline;
 using Control = MWU.FilmLib.TakeRecordingController;
 using Loc = MWU.FilmLib.TakeRecordingLoc;
 
@@ -114,17 +115,39 @@ namespace MWU.FilmLib
                 {
                     if( tracks.Count > 0)
                     {
+                        var baseIndent = 0;
+
                         foreach (var track in tracks)
                         {
-                            // figure out what type of track this is:
-                            var type = TimelineUtils.GetTrackType(track);
-                            GUILayout.Label("Track: " + track.name);
+                            DrawTrackEntry(track, baseIndent);
                         }
                     }
                 }
+                GUILayout.EndVertical();
                 
             }
             GUILayout.EndHorizontal();
+        }
+
+        public static void DrawTrackEntry( TrackAsset track, float indent)
+        {
+            // figure out what type of track this is:
+            var type = TimelineUtils.GetTrackType(track);
+
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Space(indent);
+                GUILayout.Label(type.ToString() + ": " + track.name);
+            }
+            GUILayout.EndHorizontal();
+
+            var childTracks = track.GetChildTracks();
+            var baseIndent = indent + 10f;
+
+            foreach (var child in childTracks)
+            {
+                DrawTrackEntry(child, baseIndent);
+            }
         }
     }
 }

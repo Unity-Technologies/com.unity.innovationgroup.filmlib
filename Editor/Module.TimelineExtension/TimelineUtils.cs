@@ -13,6 +13,7 @@ namespace MWU.FilmLib
 {
     public enum TRACK_TYPE
     {
+        TRACK_UNKNOWN,          // unknown or custom track type
         TRACK_GROUP,
         TRACK_ANIMATION,
         TRACK_AUDIO,
@@ -301,6 +302,26 @@ namespace MWU.FilmLib
         /// <returns></returns>
         public static TRACK_TYPE GetTrackType( TrackAsset track)
         {
+            if( track as ControlTrack != null)
+            {
+                return TRACK_TYPE.TRACK_CONTROL;
+            }
+            else if( track as AnimationTrack != null)
+            {
+                return TRACK_TYPE.TRACK_ANIMATION;
+            }
+            else if( track as Cinemachine.Timeline.CinemachineTrack != null)
+            {
+                return TRACK_TYPE.TRACK_CINEMACHINE;
+            }
+            else if( track as AudioTrack != null)
+            {
+                return TRACK_TYPE.TRACK_AUDIO;
+            }
+            else if( track as GroupTrack != null)
+            {
+                return TRACK_TYPE.TRACK_GROUP;
+            }
             // TODO
             return TRACK_TYPE.TRACK_ANIMATION;
         }
@@ -315,8 +336,6 @@ namespace MWU.FilmLib
 
             if (pro == null)
             {
-
-
                 UnityEngine.Debug.LogWarning("Error in getting property: " + clip + "." + propertyName);
                 return;
             }
