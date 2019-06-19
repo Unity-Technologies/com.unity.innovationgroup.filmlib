@@ -19,7 +19,7 @@ namespace UnityEngine.Experimental.Rendering.HDPipeline
     public sealed class FurRenderPass : MonoBehaviour
     {
         // Currently shell count is internally set, in the future, this needs to be converted to per-renderer setting
-        private int m_ShellCount = 32;
+        [SerializeField] int m_ShellCount = 32;
         public int ShellCount 
         {
             get { return m_ShellCount;  }
