@@ -11,6 +11,8 @@ using Core = MWU.FilmLib.NewContentWizardCore;
 using Settings = MWU.FilmLib.NewContentWizardSettings;
 using Loc = MWU.FilmLib.NewContentWizardLoc;                                   // string localization table
 using System;
+using UnityEngine.Experimental.Rendering;
+using UnityEditor.Experimental.Rendering;
 
 namespace MWU.FilmLib
 {
