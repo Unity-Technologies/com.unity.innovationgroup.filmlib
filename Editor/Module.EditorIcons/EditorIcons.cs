@@ -27,6 +27,7 @@ namespace MWU.FilmLib
             {
                 return icons[name];
             }
+            Debug.Log("EditorIcons:GetIcon() - Could not find Icon: " + name + " check your spelling?");
             return null;
         }
 
@@ -38,6 +39,7 @@ namespace MWU.FilmLib
             icons.Clear();
             icons = new Dictionary<string, Texture2D>()
             {
+                {  "UnityLogo", LoadAsset("White/Branding/Logo.png") },
                 {  "ArrowLeft", LoadAsset("White/Icons/arrow_left.png") },
                 {  "ArrowRight", LoadAsset("White/Icons/arrow_right.png") },
                 {  "Add", LoadAsset("White/Icons/add.png") },
