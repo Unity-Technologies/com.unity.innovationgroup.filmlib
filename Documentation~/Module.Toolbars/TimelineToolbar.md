@@ -1,4 +1,4 @@
-#Timeline Toolbar
+# Timeline Toolbar
 
 The Timeline Toolbar is a very simple custom Editor window that includes preset shortcuts to game objects in the loaded scenes. It also exposes the ‘Detail settings’ options provided by Module.RenderSettings.
 
