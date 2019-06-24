@@ -148,6 +148,23 @@ namespace MWU.FilmLib
                 }
             }
             GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            {
+                var begin = EditorIcons.GetIcon("SkipPrevious");
+                GUILayout.Button(begin, GUILayout.Width(SMALLBUTTONSIZE), GUILayout.Height(SMALLBUTTONSIZE));
+                var rewind = EditorIcons.GetIcon("FastRewind");
+                GUILayout.Button(rewind, GUILayout.Width(SMALLBUTTONSIZE), GUILayout.Height(SMALLBUTTONSIZE));
+                var stop = EditorIcons.GetIcon("Stop");
+                GUILayout.Button(stop, GUILayout.Width(SMALLBUTTONSIZE), GUILayout.Height(SMALLBUTTONSIZE));
+                var play = EditorIcons.GetIcon("Play");
+                GUILayout.Button(play, GUILayout.Width(SMALLBUTTONSIZE), GUILayout.Height(SMALLBUTTONSIZE));
+                var forward = EditorIcons.GetIcon("FastForward");
+                GUILayout.Button(forward, GUILayout.Width(SMALLBUTTONSIZE), GUILayout.Height(SMALLBUTTONSIZE));
+                var end = EditorIcons.GetIcon("SkipNext");
+                GUILayout.Button(end, GUILayout.Width(SMALLBUTTONSIZE), GUILayout.Height(SMALLBUTTONSIZE));
+            }
+            GUILayout.EndHorizontal();
         }
 
         public static void DrawTrackEntry( TrackAsset track, float indent)

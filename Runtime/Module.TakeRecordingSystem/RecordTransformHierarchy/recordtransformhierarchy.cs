@@ -38,7 +38,8 @@ namespace MWU.FilmLib
                 // Save the recorded session to the clip.
                 objectRecorder.SaveToClip(clip);
 
-                AssetDatabase.CreateAsset(clip, "Assets/Test.anim");
+                var path = AssetDatabase.GenerateUniqueAssetPath("Assets/Test.anim");
+                AssetDatabase.CreateAsset(clip, path);
             }
 
             recordingActive = false;
