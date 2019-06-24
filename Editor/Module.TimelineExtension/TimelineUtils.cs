@@ -335,6 +335,11 @@ namespace MWU.FilmLib
             return TRACK_TYPE.TRACK_ANIMATION;
         }
 
+        public static UnityEngine.Object GetSourceObjectFromTrack(TrackAsset track, PlayableDirector pd)
+        {
+            return pd.GetGenericBinding(track);
+        }
+
         /// <summary>
         /// All manipulation through reflection
         /// Highly prompt to changes, use at risk
@@ -452,10 +457,25 @@ namespace MWU.FilmLib
 
         public static void ToggleLockWindow()
         {
-            var window = TimelineUtils.GetTimelineWindow();
+            var window = GetTimelineWindow();
             PropertyInfo propertyInfo = window.GetType().GetProperty("locked");
             bool value = (bool)propertyInfo.GetValue(window, null);
             propertyInfo.SetValue(window, !value, null);
+            window.Repaint();
+        }
+
+        public static bool GetTimelineWindowLockStatus()
+        {
+            var window = GetTimelineWindow();
+            PropertyInfo propertyInfo = window.GetType().GetProperty("locked");
+            return (bool)propertyInfo.GetValue(window, null);
+        }
+
+        public static void SetTimelineWindowLockStatus(bool newState)
+        {
+            var window = GetTimelineWindow();
+            PropertyInfo propertyInfo = window.GetType().GetProperty("locked");
+            propertyInfo.SetValue(window, newState, null);
             window.Repaint();
         }
 

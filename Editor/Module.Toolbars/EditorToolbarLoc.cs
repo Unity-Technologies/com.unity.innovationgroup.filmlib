@@ -55,6 +55,7 @@ namespace MWU.FilmLib
         public const string TIMELINETOOLBAR_TOGGLEGRASS = "Toggle Grass";
         public const string TIMELINETOOLBAR_FURSHELLCOUNT = "Fur Shell Count";
         public const string TIMELINETOOLBAR_UDPATEFUR = "Update Fur";
+        public const string TIMELNIETOOLBAR_LOCKTIMELINE = "Lock Timeline";
         public const string MAINTOOLBAR_RENDERWINDOW = "Render Window";
 
     }

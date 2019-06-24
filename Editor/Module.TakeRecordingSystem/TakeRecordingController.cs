@@ -18,6 +18,20 @@ namespace MWU.FilmLib
         BEAT_TIMELINE
     }
 
+    public class TrackRecording
+    {
+        public TimelineAsset thisTimeline;
+        public TrackAsset thisTrack;
+        public string trackName;
+        public List<RecordingTake> takes = new List<RecordingTake>();
+    }
+
+    public struct RecordingTake
+    {
+        public string takeName;
+        public TimelineClip clip;
+        public AnimationClip animClip;
+    }
 
     public class TakeRecordingController : MonoBehaviour
     {

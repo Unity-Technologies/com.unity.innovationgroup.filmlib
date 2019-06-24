@@ -51,6 +51,7 @@ namespace MWU.FilmLib
                 {  "Create", LoadAsset("White/Icons/create.png") },
                 {  "Settings", LoadAsset("White/Icons/settings.png") },
                 {  "Save", LoadAsset("White/Icons/save_alt.png") },
+                {  "Record", LoadAsset("White/Icons/fiber_manual_record.png") },
                 {  "AnimationTrack", LoadAsset("White/Icons/play_arrow.png") },
                 {  "AudioTrack", LoadAsset("White/Icons/audiotrack.png") },
                 {  "CinemachineTrack", LoadAsset("White/Icons/local_see.png") },

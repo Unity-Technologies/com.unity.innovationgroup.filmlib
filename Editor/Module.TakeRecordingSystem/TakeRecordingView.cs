@@ -98,7 +98,24 @@ namespace MWU.FilmLib
                         Control.selectedTimelineIdx = EditorGUILayout.Popup(Control.selectedTimelineIdx, Control.timelineListLabel.ToArray(), GUILayout.MaxWidth(STANDARDBUTTONSIZE));
                         if (GUILayout.Button("Select"))
                         {
-                            Selection.activeObject = Control.timelineList[Control.selectedTimelineIdx].gameObject;
+                            if( TimelineUtils.GetTimelineWindowLockStatus())
+                            {
+                                // unlock timeline window
+                                TimelineUtils.SetTimelineWindowLockStatus(false);
+                            }
+
+                            if (Control.timelineList[Control.selectedTimelineIdx] != null)
+                            {
+                                Selection.activeObject = Control.timelineList[Control.selectedTimelineIdx].gameObject;
+                            }
+                            else
+                            {
+                                // if the timeline was null, we should probably refresh and figure out what's up
+                                Control.RefreshTimelinesInScene(true); 
+                            }
+                            // and lock it again
+                            TimelineUtils.SetTimelineWindowLockStatus(true);
+
                         }
                     }
                     GUILayout.EndHorizontal();
@@ -137,13 +154,39 @@ namespace MWU.FilmLib
         {
             // figure out what type of track this is:
             var type = TimelineUtils.GetTrackType(track);
-
+            
             GUILayout.BeginHorizontal();
             {
                 GUILayout.Space(indent);
                 var icon = Control.GetIconForType(type);
-                GUILayout.Button(icon, GUILayout.Width(SMALLBUTTONSIZE), GUILayout.Height(SMALLBUTTONSIZE));
-                GUILayout.Label( track.name);
+                GUILayout.Label(icon, GUILayout.Width(SMALLBUTTONSIZE), GUILayout.Height(SMALLBUTTONSIZE));
+                if( type != TRACK_TYPE.TRACK_ANIMATION)
+                {
+                    GUILayout.Label(track.name);
+                }
+                else
+                if( type == TRACK_TYPE.TRACK_ANIMATION)
+                {
+                    var sourceObject = TimelineUtils.GetSourceObjectFromTrack(track, Control.GetActiveTimeline());
+                    if( sourceObject == null)
+                    {
+                        GUILayout.Label(track.name);
+                    }
+                    else
+                    {
+                        GUILayout.Label(sourceObject.name);
+                    }
+
+                    var recordIcon = EditorIcons.GetIcon("Record");
+                    var defaultColor = GUI.backgroundColor;
+                    GUI.backgroundColor = Color.red;
+                    var recordContent = new GUIContent(recordIcon, "Arm Track");
+                    if ( GUILayout.Button(recordContent, GUILayout.Width(SMALLBUTTONSIZE), GUILayout.Height(SMALLBUTTONSIZE)))
+                    {
+                        Debug.Log("Track armed!");
+                    }
+                    GUI.backgroundColor = defaultColor;
+                }
             }
             GUILayout.EndHorizontal();
 

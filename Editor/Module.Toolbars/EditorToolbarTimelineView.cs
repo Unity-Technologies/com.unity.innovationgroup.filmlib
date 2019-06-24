@@ -144,6 +144,21 @@ namespace MWU.FilmLib
                         }
                         GUILayout.EndVertical();
                     }
+                    GUILayout.BeginVertical();
+                    {
+                        GUILayout.Label("Timeline Utils");
+                        GUILayout.BeginHorizontal();
+                        {
+                            var lockWindow = new GUIContent(EditorToolbarLoc.TIMELNIETOOLBAR_LOCKTIMELINE);
+
+                            if (GUILayout.Button(lockWindow, style, GUILayout.MaxWidth(style.CalcSize(lockWindow).x), GUILayout.MaxHeight(defaultButtonSize.y)))
+                            {
+                                TimelineUtils.ToggleLockWindow();
+                            }
+                        }
+                        GUILayout.EndHorizontal();
+                    }
+                    GUILayout.EndVertical();
                 }
                 GUILayout.EndHorizontal();
             }
