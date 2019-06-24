@@ -25,6 +25,8 @@ namespace MWU.FilmLib
         public static List<PlayableDirector> timelineList = new List<PlayableDirector>();
         public static int selectedTimelineIdx = 0;
         public static int activeTimelineIdx = 0;
+        public static float currentTimelineTime = 0f;
+        public static float currentTimelineDuration = 0f;
 
         private void OnEnable()
         {
@@ -62,10 +64,12 @@ namespace MWU.FilmLib
         /// <returns></returns>
         public static PlayableDirector GetActiveTimeline()
         {
+
             var pdAsset = TimelineUtils.GetCurrentActiveTimeline();
             if (pdAsset != null)
             {
                 activeTimeline = TimelineUtils.GetDirectorFromTimeline(pdAsset);
+                currentTimelineDuration = (float) activeTimeline.duration;
             }
             
             return activeTimeline;
@@ -235,7 +239,7 @@ namespace MWU.FilmLib
             var go = GameObject.Find("MasterTimeline");
             if( go == null)
             {
-                Debug.Log("Could not find object named 'MasterTimeline");
+                Debug.Log("Could not find object named 'MasterTimeline, prompt to create...");
                 return null;
             }
             return go.GetOrAddComponent<PlayableDirector>();
