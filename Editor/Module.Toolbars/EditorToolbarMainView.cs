@@ -13,7 +13,7 @@ namespace MWU.FilmLib
         private static Vector2 maxWindowSize = new Vector2(1920f, 50f);
         private static Vector2 minWindowSize = new Vector2(1260f, 50f);
         private Vector2 curWindowSize = new Vector2(1920f, 50f);
-        private Vector2 defaultButtonSize = new Vector2(115f, 35f);
+        private Vector2 defaultButtonSize = new Vector2(100f, 35f);
         private Vector2 _scroll = Vector2.zero;
         private static ToolbarConfig config;
         private static List<string> sceneNames = new List<string>();
@@ -33,7 +33,7 @@ namespace MWU.FilmLib
                 initialized = false;
                 // FIXME: should load a default config from the package folder if we don't have one in the project
                 // and/or prompt user to create a config
-                // Debug.Log("Could not load toolbar config?");
+                Debug.Log("Could not load toolbar config? TODO: prompt create one");
             }
             else
             {
@@ -66,8 +66,9 @@ namespace MWU.FilmLib
             var colSceneLoader = new Color(0.75f, 1f, 1f, 1f);
             var colShortcuts = new Color(1f, 0.75f, 1f, 1f);
             var colLayout = new Color(1f, 1f, 0.75f, 1f);
+            var style = EditorStyles.miniButton;
 
-            if( initialized)
+            if ( initialized)
             {
                 // toolbar buttons
                 GUILayout.BeginHorizontal(GUILayout.MinWidth(minWindowSize.x), GUILayout.MinHeight(minWindowSize.y));
@@ -83,32 +84,43 @@ namespace MWU.FilmLib
                             {
                                 if (config != null)
                                 {
-                                    for (int i = 0; i < sceneNames.Count; i++)
+                                    if (sceneNames.Count < 1)
                                     {
-                                        if (config.sceneLoaderType == SceneLoaderType.Individual)
+                                        if( GUILayout.Button("New Episode", style, GUILayout.MaxWidth(defaultButtonSize.x), GUILayout.MaxHeight(defaultButtonSize.y)))
                                         {
-                                            if (GUILayout.Button(sceneNames[i], GUILayout.MaxWidth(defaultButtonSize.x), GUILayout.MaxHeight(defaultButtonSize.y)))
-                                            {
-                                                var sceneFullPath = AssetDatabase.GetAssetOrScenePath(config.sceneLoaderList[i]);
-
-                                                EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(config.sceneLoaderList[i]), OpenSceneMode.Single);
-
-                                            }
+                                            Debug.Log("TODO: Add Create new Episode functionality");
                                         }
-                                        else
+                                    }
+                                    else
+                                    {
+
+                                        for (int i = 0; i < sceneNames.Count; i++)
                                         {
-                                            foreach (var item in config.sceneLoaderList)
+                                            if (config.sceneLoaderType == SceneLoaderType.Individual)
                                             {
-                                                var buttonName = item.name;
-                                                if (GUILayout.Button(buttonName, GUILayout.MaxWidth(defaultButtonSize.x), GUILayout.MaxHeight(defaultButtonSize.y)))
+                                                var loaderName = new GUIContent(sceneNames[i]);
+                                                if (GUILayout.Button(loaderName, style, GUILayout.MaxWidth(style.CalcSize(loaderName).x), GUILayout.MaxHeight(defaultButtonSize.y)))
                                                 {
-                                                    var path = AssetDatabase.GetAssetOrScenePath(item);
-                                                    EditorUtilities.FindProjectLoader(path);
+                                                    var sceneFullPath = AssetDatabase.GetAssetOrScenePath(config.sceneLoaderList[i]);
+
+                                                    EditorSceneManager.OpenScene(AssetDatabase.GetAssetPath(config.sceneLoaderList[i]), OpenSceneMode.Single);
 
                                                 }
                                             }
-                                        }
+                                            else
+                                            {
+                                                foreach (var item in config.sceneLoaderList)
+                                                {
+                                                    var buttonName = item.name;
+                                                    if (GUILayout.Button(buttonName, style, GUILayout.MaxWidth(defaultButtonSize.x), GUILayout.MaxHeight(defaultButtonSize.y)))
+                                                    {
+                                                        var path = AssetDatabase.GetAssetOrScenePath(item);
+                                                        EditorUtilities.FindProjectLoader(path);
 
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                                 //if (GUILayout.Button(EditorToolbarLoc.MAINTOOLBAR_LOADER_SHERMANEP01, GUILayout.MaxWidth(defaultButtonSize.x), GUILayout.MaxHeight(defaultButtonSize.y)))
@@ -136,23 +148,23 @@ namespace MWU.FilmLib
                             {
                                 GUI.backgroundColor = colShortcuts;
 
-                                if (GUILayout.Button(EditorToolbarLoc.MAINTOOLBAR_EDIT_SEARCHPROJECT, GUILayout.MaxWidth(defaultButtonSize.x), GUILayout.MaxHeight(defaultButtonSize.y)))
+                                if (GUILayout.Button(EditorToolbarLoc.MAINTOOLBAR_EDIT_SEARCHPROJECT, style, GUILayout.MaxWidth(defaultButtonSize.x), GUILayout.MaxHeight(defaultButtonSize.y)))
                                 {
                                     Shortcuts.ProjectSearch();
                                 }
-                                if (GUILayout.Button(EditorToolbarLoc.MAINTOOLBAR_EDIT_POPULATESCENE, GUILayout.MaxWidth(defaultButtonSize.x), GUILayout.MaxHeight(defaultButtonSize.y)))
+                                if (GUILayout.Button(EditorToolbarLoc.MAINTOOLBAR_EDIT_POPULATESCENE, style, GUILayout.MaxWidth(defaultButtonSize.x), GUILayout.MaxHeight(defaultButtonSize.y)))
                                 {
                                     NewContentWizardMenus.NewSceneFromTemplate();
                                 }
-                                if (GUILayout.Button(EditorToolbarLoc.MAINTOOLBAR_EDIT_POPULATEFOLDERS, GUILayout.MaxWidth(defaultButtonSize.x), GUILayout.MaxHeight(defaultButtonSize.y)))
+                                if (GUILayout.Button(EditorToolbarLoc.MAINTOOLBAR_EDIT_POPULATEFOLDERS, style, GUILayout.MaxWidth(defaultButtonSize.x), GUILayout.MaxHeight(defaultButtonSize.y)))
                                 {
                                     NewContentWizardMenus.PopulateFolderStructure();
                                 }
-                                if (GUILayout.Button(EditorToolbarLoc.MAINTOOLBAR_EDIT_CREATEGROUP, GUILayout.MaxWidth(defaultButtonSize.x), GUILayout.MaxHeight(defaultButtonSize.y)))
+                                if (GUILayout.Button(EditorToolbarLoc.MAINTOOLBAR_EDIT_CREATEGROUP, style, GUILayout.MaxWidth(defaultButtonSize.x), GUILayout.MaxHeight(defaultButtonSize.y)))
                                 {
                                     Shortcuts.CreateGroup();
                                 }
-                                if (GUILayout.Button(EditorToolbarLoc.MAINTOOLBAR_EDIT_TOGGLEGIZMOS, GUILayout.MaxWidth(defaultButtonSize.x), GUILayout.MaxHeight(defaultButtonSize.y)))
+                                if (GUILayout.Button(EditorToolbarLoc.MAINTOOLBAR_EDIT_TOGGLEGIZMOS, style, GUILayout.MaxWidth(defaultButtonSize.x), GUILayout.MaxHeight(defaultButtonSize.y)))
                                 {
                                     if (gizmosState == true)
                                     {
@@ -170,7 +182,7 @@ namespace MWU.FilmLib
                                 //    Shortcuts.CenterOnChildren();
                                 //}
 #if USING_FILMTOOLBOX
-                                if (GUILayout.Button(EditorToolbarLoc.MAINTOOLBAR_EDIT_MATERIALREMAPPER, GUILayout.MaxWidth(defaultButtonSize.x), GUILayout.MaxHeight(defaultButtonSize.y)))
+                                if (GUILayout.Button(EditorToolbarLoc.MAINTOOLBAR_EDIT_MATERIALREMAPPER, style, GUILayout.MaxWidth(defaultButtonSize.x), GUILayout.MaxHeight(defaultButtonSize.y)))
                                 {
                                     EditorToolbarController.OpenMaterialRemapper();
                                 }
@@ -194,7 +206,7 @@ namespace MWU.FilmLib
                             GUILayout.BeginHorizontal();
                             {
                                 GUI.backgroundColor = colLayout;
-                                if (GUILayout.Button("Load Film Layout", GUILayout.MaxWidth(defaultButtonSize.x), GUILayout.MaxHeight(defaultButtonSize.y)))
+                                if (GUILayout.Button("Load Film Layout", style, GUILayout.MaxWidth(defaultButtonSize.x), GUILayout.MaxHeight(defaultButtonSize.y)))
                                 {
                                     LayoutLoader.LoadFilmLayout();
                                 }
@@ -211,7 +223,7 @@ namespace MWU.FilmLib
                 GUILayout.BeginHorizontal(GUILayout.MinWidth(minWindowSize.x), GUILayout.MinHeight(minWindowSize.y));
                 {
                     GUILayout.Space(10f);
-                    if (GUILayout.Button(EditorToolbarLoc.TOOLBAR_CREATE_CONFIG, GUILayout.MaxWidth(defaultButtonSize.x), GUILayout.MaxHeight(defaultButtonSize.y)))
+                    if (GUILayout.Button(EditorToolbarLoc.TOOLBAR_CREATE_CONFIG, style, GUILayout.MaxWidth(defaultButtonSize.x), GUILayout.MaxHeight(defaultButtonSize.y)))
                     {
                         Debug.Log("Created new toolbar config");
                         EditorToolbarController.CreateToolbarConfig();

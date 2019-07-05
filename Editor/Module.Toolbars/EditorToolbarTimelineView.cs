@@ -74,19 +74,50 @@ namespace MWU.FilmLib
                             {
                                 GUI.backgroundColor = colShortcuts;
                                 var masterTimeline = new GUIContent(EditorToolbarLoc.TIMELINETOOLBAR_SHORTCUT_MASTERTIMELINE);
-                                if (GUILayout.Button(masterTimeline, style, GUILayout.MaxWidth(style.CalcSize(masterTimeline).x), GUILayout.MaxHeight(defaultButtonSize.y)))
+                                if( EditorUtilities.GetSceneObject("MasterTimeline") == null)
                                 {
-                                    EditorUtilities.FindSceneObject("MasterTimeline");
+                                    if( GUILayout.Button("New Master Timeline"))
+                                    {
+                                        Debug.Log("TODO: Create new master timeline GO & Asset");
+                                    }
                                 }
-                                var sceneSettings = new GUIContent(EditorToolbarLoc.TIMELINETOOLBAR_SHORTCUT_SCENESETTINGS);
-                                if (GUILayout.Button(sceneSettings, style, GUILayout.MaxWidth(style.CalcSize(sceneSettings).x), GUILayout.MaxHeight(defaultButtonSize.y)))
+                                else
                                 {
-                                    EditorUtilities.FindSceneObject("SceneSettings");
+                                    if (GUILayout.Button(masterTimeline, style, GUILayout.MaxWidth(style.CalcSize(masterTimeline).x), GUILayout.MaxHeight(defaultButtonSize.y)))
+                                    {
+                                        EditorUtilities.FindSceneObject("MasterTimeline");
+                                    }
+                                }
+                                
+                                var sceneSettings = new GUIContent(EditorToolbarLoc.TIMELINETOOLBAR_SHORTCUT_SCENESETTINGS);
+                                if (EditorUtilities.GetSceneObject("SceneSettings") == null)
+                                {
+                                    if (GUILayout.Button("New Scene Settings"))
+                                    {
+                                        Debug.Log("TODO: Create new Scene settings");
+                                    }
+                                }
+                                else
+                                {
+                                    if (GUILayout.Button(sceneSettings, style, GUILayout.MaxWidth(style.CalcSize(sceneSettings).x), GUILayout.MaxHeight(defaultButtonSize.y)))
+                                    {
+                                        EditorUtilities.FindSceneObject("SceneSettings");
+                                    }
                                 }
                                 var globalPost = new GUIContent(EditorToolbarLoc.TIMELINETOOLBAR_GLOBALPOST);
-                                if (GUILayout.Button(globalPost, style, GUILayout.MaxWidth(style.CalcSize(globalPost).x), GUILayout.MaxHeight(defaultButtonSize.y)))
+                                if (EditorUtilities.GetSceneObject("PostVolume") == null)
                                 {
-                                    EditorUtilities.FindSceneObject("PostVolume");
+                                    if (GUILayout.Button("New Post Volume"))
+                                    {
+                                        Debug.Log("TODO: Create new Post Volume");
+                                    }
+                                }
+                                else
+                                {
+                                    if (GUILayout.Button(globalPost, style, GUILayout.MaxWidth(style.CalcSize(globalPost).x), GUILayout.MaxHeight(defaultButtonSize.y)))
+                                    {
+                                        EditorUtilities.FindSceneObject("PostVolume");
+                                    }
                                 }
                             }
                             GUILayout.EndHorizontal();

@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using MWU.FilmLib.Extensions;
+using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Playables;
@@ -11,22 +12,23 @@ namespace MWU.FilmLib
 {
     public class TakeRecordingView : EditorWindow
     {
-        private static Vector2 maxWindowSize = new Vector2(300f, 400f);
+        private static Vector2 maxWindowSize = new Vector2(300f, 800f);
         private static Vector2 minWindowSize = new Vector2(200f, 200f);
 
         protected static float STANDARDBUTTONSIZE = 225f;
         protected static float STANDARDBUTTONHEIGHT = 35f;
         protected static float SMALLBUTTONSIZE = 24f;
         protected static float DEFAULT_TRACK_INDENT = 25f;
+        protected static TakeRecordingView thisWindow;
 
         [MenuItem("Tools/Take System")]
         private static void Init()
         {
-            var window = GetWindow<TakeRecordingView>(Loc.WINDOW_TITLE);
+            thisWindow = GetWindow<TakeRecordingView>(Loc.WINDOW_TITLE);
             TimelineUtils.GetTimelineWindow();
-            window.Show();
-            window.maxSize = maxWindowSize;
-            window.minSize = minWindowSize;
+            thisWindow.Show();
+            //thisWindow.maxSize = maxWindowSize;
+            thisWindow.minSize = minWindowSize;
         }
 
         private void OnGUI()
@@ -36,6 +38,7 @@ namespace MWU.FilmLib
             GUILayout.Label(Loc.WINDOW_MAINDESCRIPTION, EditorStyles.helpBox);
             GUILayout.Space(5f);
 
+            // timeline list
             GUILayout.BeginVertical();
             {
                 GUILayout.Label(Loc.TIMELINE_CURRENTSELECTION);
@@ -85,7 +88,7 @@ namespace MWU.FilmLib
                 GUILayout.EndHorizontal();
             }
             GUILayout.EndVertical();
-            GUILayout.Space(5f);
+            //GUILayout.Space(5f);
 
             // timeline management
             GUILayout.BeginHorizontal();
@@ -122,8 +125,9 @@ namespace MWU.FilmLib
                 }
             }
             GUILayout.EndHorizontal();
-            GUILayout.Space(15f);
+          //  GUILayout.Space(15f);
 
+            // timeline control
             GUILayout.BeginHorizontal();
             {
                 if (Control.GetActiveTimeline() != null)
@@ -179,7 +183,7 @@ namespace MWU.FilmLib
                 }
             }
             GUILayout.EndHorizontal();
-            GUILayout.Space(15f);
+           // GUILayout.Space(15f);
 
             // track management
             GUILayout.BeginHorizontal();
@@ -207,6 +211,16 @@ namespace MWU.FilmLib
             GUILayout.EndHorizontal();
         }
         
+        public static void Update()
+        {
+            thisWindow.Repaint();
+        }
+
+        /// <summary>
+        /// draw an individual entry in the track
+        /// </summary>
+        /// <param name="track"></param>
+        /// <param name="indent"></param>
         public static void DrawTrackEntry( TrackAsset track, float indent)
         {
             // figure out what type of track this is:
@@ -240,6 +254,11 @@ namespace MWU.FilmLib
                     var recordContent = new GUIContent(recordIcon, "Arm Track");
                     if ( GUILayout.Button(recordContent, GUILayout.Width(SMALLBUTTONSIZE), GUILayout.Height(SMALLBUTTONSIZE)))
                     {
+                        var go = new GameObject();
+                        go.name = "Recorder_" + sourceObject.name;
+                        var recorder = go.GetOrAddComponent<RecordTransformHierarchy>();
+                        recorder.objectToRecord = sourceObject as GameObject;
+
                         Debug.Log("Track armed!");
                     }
                     GUI.backgroundColor = defaultColor;

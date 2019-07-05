@@ -13,18 +13,22 @@ namespace MWU.FilmLib
 
             var targetScript = (RecordTransformHierarchy)target;
 
-            if(targetScript.recordingActive)
+            // if we're playing the game, then we can do stuff
+            if (Application.isPlaying)
             {
-                if( GUILayout.Button("Stop Recording"))
+                if (targetScript.recordingActive)
                 {
-                    targetScript.StopRecording();
+                    if (GUILayout.Button("Stop Recording"))
+                    {
+                        targetScript.StopRecording();
+                    }
                 }
-            }
-            else
-            {
-                if (GUILayout.Button("Start Recording"))
+                else
                 {
-                    targetScript.StartRecording();
+                    if (GUILayout.Button("Start Recording"))
+                    {
+                        targetScript.StartRecording();
+                    }
                 }
             }
         }

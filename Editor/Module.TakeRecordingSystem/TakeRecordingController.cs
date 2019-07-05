@@ -18,6 +18,23 @@ namespace MWU.FilmLib
         BEAT_TIMELINE
     }
     
+    public class TrackRecording
+    {
+        public TimelineAsset thisTimeline;
+        public TrackAsset thisTrack;
+        public string trackName;
+        public List<RecordingTake> takes = new List<RecordingTake>();
+        public GameObject objectRecorder;
+        public GameObject objectToRecord;
+    }
+
+    public struct RecordingTake
+    {
+        public string takeName;
+        public TimelineClip clip;
+        public AnimationClip animClip;
+    }
+    
     public class TakeRecordingController : MonoBehaviour
     {
         public static PlayableDirector activeTimeline;
@@ -27,6 +44,7 @@ namespace MWU.FilmLib
         public static int activeTimelineIdx = 0;
         public static float currentTimelineTime = 0f;
         public static float currentTimelineDuration = 0f;
+        public static List<TrackRecording> recordTracks = new List<TrackRecording>();
 
         private void OnEnable()
         {
@@ -143,7 +161,6 @@ namespace MWU.FilmLib
                             masterPd.SetReferenceValue(controlAsset.sourceGameObject.exposedName, pd.gameObject);
                         }
                         
-
                         // fill in our beat track template
                         var ta = TimelineUtils.GetTimelineAssetFromDirector(pd);
                         var camera = TimelineUtils.CreateTimelineTrack(ta, TRACK_TYPE.TRACK_GROUP, "Camera", null);
@@ -167,6 +184,11 @@ namespace MWU.FilmLib
                         break;
                     }
             }
+        }
+
+        public static void ArmNewTrackRecording(GameObject targetObject, TrackAsset track)
+        {
+            
         }
 
         public static List<TrackAsset> GetTracksInActiveTimeline()

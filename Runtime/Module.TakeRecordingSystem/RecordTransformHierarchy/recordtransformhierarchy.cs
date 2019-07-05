@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 
@@ -23,9 +24,12 @@ namespace MWU.FilmLib
 
         public void StartRecording()
         {
-            clip = new AnimationClip();
+            if (Application.isPlaying)
+            {
+                clip = new AnimationClip();
 
-            recordingActive = true;
+                recordingActive = true;
+            }
         }
 
         public void StopRecording()
@@ -39,7 +43,15 @@ namespace MWU.FilmLib
                 objectRecorder.SaveToClip(clip);
 
                 var path = AssetDatabase.GenerateUniqueAssetPath("Assets/Test.anim");
-                AssetDatabase.CreateAsset(clip, path);
+                try
+                {
+                    AssetDatabase.CreateAsset(clip, path);
+
+                }
+                catch( Exception e)
+                {
+                    Debug.Log("AssetDatabase.CreateAsset() - " + e.Message);
+                }
             }
 
             recordingActive = false;
