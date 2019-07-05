@@ -18,15 +18,15 @@ Open the manifest.json for your project and add the following entry to your list
 
 For example:
 
-  "dependencies": {
+  ```"dependencies": {
     "com.unity.innovationgroup.filmlib": "https://github.com/Unity-Technologies/com.unity.innovationgroup.filmlib.git",
     "com.unity.ads": "2.0.8",
     "com.unity.analytics": "3.2.2",
     "com.unity.collab-proxy": "1.2.15",
     ...
-    }
+    }```
  
  You can also append the desired branch to the end of the URL, like so:
  
-    "com.unity.innovationgroup.filmlib": "https://github.com/Unity-Technologies/com.unity.innovationgroup.filmlib.git#dev",
+   ``` "com.unity.innovationgroup.filmlib": "https://github.com/Unity-Technologies/com.unity.innovationgroup.filmlib.git#dev",```
 
