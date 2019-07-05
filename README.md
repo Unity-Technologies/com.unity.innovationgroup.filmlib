@@ -24,9 +24,9 @@ For example:
     "com.unity.analytics": "3.2.2",
     "com.unity.collab-proxy": "1.2.15",
     ...
-    }```
+    }
  
  You can also append the desired branch to the end of the URL, like so:
  
-   ``` "com.unity.innovationgroup.filmlib": "https://github.com/Unity-Technologies/com.unity.innovationgroup.filmlib.git#dev",```
+   ``` "com.unity.innovationgroup.filmlib": "https://github.com/Unity-Technologies/com.unity.innovationgroup.filmlib.git#dev",
 
