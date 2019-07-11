@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEditor.FilmTV.Toolbox;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering.HDPipeline;
-using UnityEngine.SceneManagement;
 
 namespace MWU.FilmLib
 {
@@ -14,7 +11,7 @@ namespace MWU.FilmLib
         public static void OpenMaterialRemapper()
         {
             // open the material remapper
-            var window = EditorWindow.GetWindow<MaterialRemapperView>(MWU.FilmLib.MaterialRemapperLocalization.windowLabel);
+            var window = EditorWindow.GetWindow<MaterialRemapperView>("Material Remapper");
             window.minSize = new Vector2(640, 480);
             window.Show();
         }

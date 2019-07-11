@@ -8,6 +8,7 @@
         "Unity.RenderPipelines.Core.Runtime",
         "Unity.Postprocessing.Editor",
         "Unity.RenderPipelines.Core.Editor",
+        "Unity.Film-TV.Toolbox.Editor",
         "com.unity.innovation.filmlib.shader"
     ],
     "optionalUnityReferences": [],
