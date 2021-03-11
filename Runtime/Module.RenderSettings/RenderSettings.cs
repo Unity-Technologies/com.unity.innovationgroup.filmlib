@@ -134,17 +134,27 @@ namespace MWU.FilmLib
             return detailLevelsList;
         }
 
+        // TODO: Hook into Film lib fur.
+
         public static void UpdateFur()
         {
-#if HDRP_FUR
-            HDUtils.hdrpSettings.furSettings.shellCount = furShellCount;
+#if USING_MWU_HDRP
+            // NOTE: Currently, we assume the fur render pass to live on main camera.
+            //       In the future, Fur system will be singleton (ie DecalSystem)
+            var furRenderPass = Camera.main.GetComponent<FurRenderPass>();
+            if (furRenderPass == null) return;
+
+            furRenderPass.ShellCount = furShellCount;
 #endif
         }
 
         public static void SetInitialFurCount()
         {
-#if HDRP_FUR
-            furShellCount = HDUtils.hdrpSettings.furSettings.shellCount;
+#if USING_MWU_HDRP
+            var furRenderPass = Camera.main.GetComponent<FurRenderPass>();
+            if (furRenderPass == null) return;
+
+            furShellCount = furRenderPass.ShellCount;
 #endif
         }
 

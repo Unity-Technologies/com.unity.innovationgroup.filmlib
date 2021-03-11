@@ -4,7 +4,9 @@
         "Cinemachine",
         "Unity.TextMeshPro",
         "Unity.RenderPipelines.HighDefinition.Runtime",
-        "com.newtonsoft.json"
+        "com.newtonsoft.json",
+        "Unity.RenderPipelines.Core.Runtime",
+        "com.unity.innovation.filmlib.shader"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],
